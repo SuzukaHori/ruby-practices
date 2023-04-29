@@ -20,9 +20,7 @@ def set_year_and_month(year, month)
   else
     @month = Date.today.month
   end
-  if @year == Date.today.year && @month == Date.today.month
-    @day = Date.today.day
-  end
+  @day = Date.today.day if @year == Date.today.year && @month == Date.today.month
 end  
 
 set_year_and_month(params[:y], params[:m])
