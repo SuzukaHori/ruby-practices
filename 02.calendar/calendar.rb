@@ -26,10 +26,10 @@ end
 set_year_and_month(params[:y], params[:m])
 
 puts "#{@month}月 #{@year}".center(19)
-puts "日 月 火 水 木 金 土"
+puts '日 月 火 水 木 金 土'
 
 enumerate_dates_of_month = Enumerator.new do |y| 
-  (Date.new(@year, @month, 1)..Date.new(@year, @month, -1)).each{|i| y << i} #1日から月末日までの日付が入ったEmumeratorクラスを作る
+  (Date.new(@year, @month, 1)..Date.new(@year, @month, -1)).each { |i| y << i } #1日から月末日までの日付が入ったEmumeratorクラスを作る
 end
 
 enumerate_dates_of_month.each do |date| # dateに日付を代入する
