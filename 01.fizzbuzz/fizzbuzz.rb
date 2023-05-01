@@ -1,18 +1,18 @@
 #!/usr/bin/env ruby
-array_of_numbers = []
+numbers = []
 number = 1
 
 while number <= 20
   if number % 15 == 0
-    array_of_numbers << "FizzBuzz"
+    numbers << "FizzBuzz"
   elsif number % 3 == 0
-    array_of_numbers << "Fizz"
+    numbers << "Fizz"
   elsif number % 5 == 0
-    array_of_numbers << "Buzz"
+    numbers << "Buzz"
   else 
-    array_of_numbers << number
+    numbers << number
   end
   number += 1
 end
 
-puts array_of_numbers
+puts numbers
