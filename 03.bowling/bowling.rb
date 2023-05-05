@@ -2,10 +2,10 @@
 # frozen_string_literal: true
 
 score = ARGV[0]
-scores = score.split(',')
+scores = score.split(",")
 shots = []
 scores.each do |s|
-  if s == 'X' 
+  if s == "X"
     shots << 10
     shots << 0
   else
@@ -14,12 +14,10 @@ scores.each do |s|
 end
 
 frames = []
-shots.each_slice(2) do |s|
-  frames << s
-end
+shots.each_slice(2) { |s| frames << s }
 
 while frames.include?(frames[10])
-  frames[9].push(frames[10][0].to_i, frames[10][1].to_i)
+  frames[9].push(frames[-1][0].to_i, frames[-1][1].to_i)
   frames.pop
 end
 
@@ -47,19 +45,20 @@ point = 0
 
 frames.each_with_index do |frame, index|
   next_frame = frames[index + 1]
-  point += if index == 9
-             sum_in_frame(frame)
-           elsif frame[0] == 10
-             if next_frame[0] == 10
-               calculate_double_strikes(frames, index, next_frame)
-             else
-               calculate_strike(next_frame)
-             end
-           elsif frame.sum == 10
-             calculate_spare(next_frame)
-           else
-             sum_in_frame(frame)
-           end
+  point +=
+    if index == 9
+      sum_in_frame(frame)
+    elsif frame[0] == 10
+      if next_frame[0] == 10
+        calculate_double_strikes(frames, index, next_frame)
+      else
+        calculate_strike(next_frame)
+      end
+    elsif frame.sum == 10
+      calculate_spare(next_frame)
+    else
+      sum_in_frame(frame)
+    end
 end
 
 puts point
