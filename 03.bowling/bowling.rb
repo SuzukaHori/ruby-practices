@@ -16,7 +16,7 @@ end
 frames = []
 shots.each_slice(2) { |s| frames << s }
 
-while frames.include?(frames[10])
+while frames[10]
   frames[9].push(frames[-1][0].to_i, frames[-1][1].to_i)
   frames.pop
 end
