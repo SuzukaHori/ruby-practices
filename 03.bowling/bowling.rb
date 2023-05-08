@@ -14,21 +14,20 @@ scores.each do |s|
 end
 
 frames = shots.each_slice(2).to_a
+frames[9].push(*frames.pop) while frames[10]
 
-while frames[10]
-  frames[9].push(*frames.pop)
-end
+STRIKE_POINT = 10
 
 def sum_in_frame(frame)
   frame.sum
 end
 
 def calculate_spare(next_frame)
-  10 + next_frame[0]
+  STRIKE_POINT + next_frame[0]
 end
 
 def calculate_strike(next_frame)
-  10 + next_frame[0] + next_frame[1]
+  STRIKE_POINT + next_frame[0] + next_frame[1]
 end
 
 def calculate_double_strikes(frames, index, next_frame)
@@ -46,13 +45,13 @@ frames.each_with_index do |frame, index|
   point +=
     if index == 9
       sum_in_frame(frame)
-    elsif frame[0] == 10
-      if next_frame[0] == 10
+    elsif frame[0] == STRIKE_POINT
+      if next_frame[0] == STRIKE_POINT
         calculate_double_strikes(frames, index, next_frame)
       else
         calculate_strike(next_frame)
       end
-    elsif frame.sum == 10
+    elsif frame.sum == STRIKE_POINT
       calculate_spare(next_frame)
     else
       sum_in_frame(frame)
