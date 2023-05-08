@@ -13,8 +13,7 @@ scores.each do |s|
   end
 end
 
-frames = []
-shots.each_slice(2) { |s| frames << s }
+frames = shots.each_slice(2).to_a
 
 while frames[10]
   frames[9].push(frames[-1][0].to_i, frames[-1][1].to_i)
