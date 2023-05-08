@@ -24,8 +24,11 @@ day = Date.today.day if year == Date.today.year && month == Date.today.month
 puts "#{month}月 #{year}".center(19)
 puts "日 月 火 水 木 金 土"
 
+if Date.new(year, month, 1).cwday != 7
+  Date.new(year, month, 1).cwday.times { print "   " }
+end
+
 (Date.new(year, month, 1)..Date.new(year, month, -1)).each do |date|
-  date.cwday.times { print "   " } if date.day == 1 && date.cwday != 7
   if date.day == day
     print "\e[7m " if date.day < 10
     print "#{date.day}\e[0m"
