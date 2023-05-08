@@ -32,9 +32,8 @@ end
 
 (Date.new(year, month, 1)..Date.new(year, month, -1)).each do |date|
   if date.day == day
-    print "\e[7m " if date.day < 10
-    print "#{date.day}\e[0m"
-    print " "
+    print "\e[7m", "#{date.day}".rjust(2, " ")
+    print "\e[m "
   else
     print "#{date.day}".rjust(2, " ")
     print " "
