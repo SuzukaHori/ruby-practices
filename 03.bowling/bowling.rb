@@ -34,10 +34,10 @@ end
 
 point = 0
 
-frames.each_with_index do |frame, index|
-  next_frame = frames[index + 1]
-  next_next_frame = frames[index + 2]
-  point +=
+point =
+  frames.each_with_index.sum do |frame, index|
+    next_frame = frames[index + 1]
+    next_next_frame = frames[index + 2]
     if frame[0] == STRIKE_POINT
       calculate_strike(frames, next_frame, next_next_frame)
     elsif frame.first(2).sum == STRIKE_POINT
@@ -45,6 +45,6 @@ frames.each_with_index do |frame, index|
     else
       frame.sum
     end
-end
+  end
 
 puts point
