@@ -2,10 +2,10 @@
 # frozen_string_literal: true
 
 score = ARGV[0]
-scores = score.split(",")
+scores = score.split(',')
 shots = []
 scores.each do |s|
-  if s == "X"
+  if s == 'X'
     shots << 10
     shots << 0
   else
@@ -18,8 +18,8 @@ frames[9].push(*frames.pop) while frames[10]
 
 STRIKE_POINT = 10
 
-def calculate_strike(frames, next_frame, next_next_frame)
-  return frames[9].sum if next_frame.nil?
+def calculate_strike(current_frame, next_frame, next_next_frame)
+  return current_frame.sum if next_frame.nil?
 
   if next_frame[0] == STRIKE_POINT
     if next_next_frame.nil?
@@ -34,10 +34,11 @@ end
 
 point =
   frames.each_with_index.sum do |frame, index|
+    current_frame = frames[index]
     next_frame = frames[index + 1]
     next_next_frame = frames[index + 2]
     if frame[0] == STRIKE_POINT
-      calculate_strike(frames, next_frame, next_next_frame)
+      calculate_strike(current_frame, next_frame, next_next_frame)
     elsif frame.first(2).sum == STRIKE_POINT
       next_frame.nil? ? frame.sum : STRIKE_POINT + next_frame[0]
     else
