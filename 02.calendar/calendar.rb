@@ -25,17 +25,15 @@ month =
 puts "#{month}月 #{year}".center(19)
 puts "日 月 火 水 木 金 土"
 
-if Date.new(year, month, 1).cwday != 7
-  Date.new(year, month, 1).cwday.times { print "   " }
-end
+month_start_date = Date.new(year, month, 1)
+month_start_date.cwday.times { print "   " } if month_start_date.cwday != 7
 
-(Date.new(year, month, 1)..Date.new(year, month, -1)).each do |date|
+(month_start_date..Date.new(year, month, -1)).each do |date|
+  formatted_day = date.day.to_s.rjust(2, " ")
   if date == Date.today
-    print "\e[7m", "#{date.day}".rjust(2, " ")
-    print "\e[m "
+    print "\e[7m#{formatted_day}\e[m "
   else
-    print "#{date.day}".rjust(2, " ")
-    print " "
+    print "#{formatted_day} "
   end
   print "\n" if date.saturday?
 end
