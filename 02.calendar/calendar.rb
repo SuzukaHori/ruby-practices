@@ -31,7 +31,7 @@ if Date.new(year, month, 1).cwday != 7
 end
 
 (Date.new(year, month, 1)..Date.new(year, month, -1)).each do |date|
-  if date.day == day
+  if date == Date.today
     print "\e[7m", "#{date.day}".rjust(2, " ")
     print "\e[m "
   else
