@@ -21,7 +21,6 @@ month =
   else
     params[:m]
   end
-day = Date.today.day if year == Date.today.year && month == Date.today.month
 
 puts "#{month}月 #{year}".center(19)
 puts "日 月 火 水 木 金 土"
