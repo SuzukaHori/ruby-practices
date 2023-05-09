@@ -32,8 +32,6 @@ def calculate_strike(frames, next_frame, next_next_frame)
   end
 end
 
-point = 0
-
 point =
   frames.each_with_index.sum do |frame, index|
     next_frame = frames[index + 1]
