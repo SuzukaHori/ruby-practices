@@ -18,7 +18,7 @@ frames[9].push(*frames.pop) while frames[10]
 
 STRIKE_POINT = 10
 
-def calculate_strike(current_frame, next_frame, next_next_frame)
+def calculate_strike(current_frame, next_frame = nil, next_next_frame = nil)
   return current_frame.sum if next_frame.nil?
 
   if next_frame[0] == STRIKE_POINT
@@ -34,11 +34,9 @@ end
 
 point =
   frames.each_with_index.sum do |frame, index|
-    current_frame = frames[index]
     next_frame = frames[index + 1]
-    next_next_frame = frames[index + 2]
     if frame[0] == STRIKE_POINT
-      calculate_strike(current_frame, next_frame, next_next_frame)
+      calculate_strike(*frames[index, 3])
     elsif frame.first(2).sum == STRIKE_POINT
       next_frame.nil? ? frame.sum : STRIKE_POINT + next_frame[0]
     else
