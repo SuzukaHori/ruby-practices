@@ -2,18 +2,17 @@
 # frozen_string_literal: true
 
 files = Dir.glob('*')
+NUMBER_OF_COLUMNS = 3
 
 def calculate_number_of_rows(files)
-  number_of_columns = 3
-  (files.size / number_of_columns.to_f).ceil
+  (files.size / NUMBER_OF_COLUMNS.to_f).ceil
 end
 
 def format_files(files, number_of_rows)
   column_spacing = files.map(&:size).max + 1
   files
     .map { |file| file.ljust(column_spacing) }
-    .each_slice(number_of_rows)
-    .to_a
+    .each_slice(number_of_rows).to_a
     .each { |file| file << nil while file.size < number_of_rows }
     .transpose
 end
