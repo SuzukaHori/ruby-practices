@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-files = Dir.glob('*')
+files = Dir.glob('*', base: ARGV.join)
 NUMBER_OF_COLUMNS = 3
 
 def calculate_number_of_rows(files)
