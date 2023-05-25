@@ -1,7 +1,16 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
+
+opt = OptionParser.new
+options = {}
+opt.on('-a')
+opt.parse!(ARGV, into: options)
+
 files = Dir.glob('*', base: ARGV.join)
+files.unshift(*Dir.glob('.*', base: ARGV.join)) if options[:a]
+
 NUMBER_OF_COLUMNS = 3
 
 def calculate_number_of_rows(files)
