@@ -10,7 +10,7 @@ opt.parse!(ARGV, into: options)
 
 files =
   if options[:a]
-    Dir.glob('*', File::FNM_DOTMATCH)
+    Dir.glob('*', File::FNM_DOTMATCH, base: ARGV.join)
   else
     Dir.glob('*', base: ARGV.join)
   end
