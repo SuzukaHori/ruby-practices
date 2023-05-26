@@ -8,8 +8,12 @@ options = {}
 opt.on('-a')
 opt.parse!(ARGV, into: options)
 
-files = Dir.glob('*', base: ARGV.join)
-files.unshift(*Dir.glob('.*', base: ARGV.join)) if options[:a]
+files =
+  if options[:a]
+    Dir.glob('*', File::FNM_DOTMATCH)
+  else
+    Dir.glob('*', base: ARGV.join)
+  end
 
 NUMBER_OF_COLUMNS = 3
 
