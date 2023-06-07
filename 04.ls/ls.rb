@@ -9,7 +9,7 @@ opt.on('-r')
 opt.parse!(ARGV, into: options)
 
 files = Dir.glob('*', base: ARGV.join)
-files.reverse! if options[:r]
+files = files.reverse if options[:r]
 
 NUMBER_OF_COLUMNS = 3
 
