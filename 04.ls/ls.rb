@@ -8,12 +8,8 @@ options = {}
 opt.on('-r')
 opt.parse!(ARGV, into: options)
 
-files =
-  if options[:r]
-    Dir.glob('*', base: ARGV.join).reverse
-  else
-    Dir.glob('*', base: ARGV.join)
-  end
+files = Dir.glob('*', base: ARGV.join)
+files = files.reverse if options[:r]
 
 NUMBER_OF_COLUMNS = 3
 
