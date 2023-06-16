@@ -5,15 +5,11 @@ require 'optparse'
 
 opt = OptionParser.new
 options = {}
-opt.on('-a')
+opt.on('-r')
 opt.parse!(ARGV, into: options)
 
-files =
-  if options[:a]
-    Dir.glob('*', File::FNM_DOTMATCH, base: ARGV.join)
-  else
-    Dir.glob('*', base: ARGV.join)
-  end
+files = Dir.glob('*', base: ARGV.join)
+files = files.reverse if options[:r]
 
 NUMBER_OF_COLUMNS = 3
 
