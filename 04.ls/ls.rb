@@ -68,7 +68,7 @@ def get_file_type(mode)
     '12' => 'l',
     '14' => 's'
   }
-  type_list[mode.to_s(8).rjust(6, '0')[0, 2]]
+  type_list[sprintf("%06o", mode)[0, 2]]
 end
 
 def align_file_infos(file_infos, info_lengths)
