@@ -93,12 +93,12 @@ def process_l_option(file_names)
     file_status = File.stat(file_name)
     current_file_info = build_file_info(file_name, file_status)
     file_infos << current_file_info
-    store_totals_and_length(info_lengths, current_file_info, file_blocks, file_status)
+    store_blocks_and_length(info_lengths, current_file_info, file_blocks, file_status)
   end
   [file_blocks.sum, align_file_infos(file_infos, info_lengths)]
 end
 
-def store_totals_and_length(info_lengths, current_file_info, file_blocks, file_status)
+def store_blocks_and_length(info_lengths, current_file_info, file_blocks, file_status)
   INFO_KEYS.each { |key| info_lengths[key] << current_file_info[key].length }
   file_blocks << file_status.blocks
 end
