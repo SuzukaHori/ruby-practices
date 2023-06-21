@@ -15,6 +15,17 @@ INFO_KEYS = %i[
   file_name
 ].freeze
 
+PERMISSION_LIST = {
+  '0' => '---',
+  '1' => '--x',
+  '2' => '-w-',
+  '3' => '-wx',
+  '4' => 'r--',
+  '5' => 'r-x',
+  '6' => 'rw-',
+  '7' => 'rwx'
+}.freeze
+
 def calculate_number_of_rows(files)
   (files.size / NUMBER_OF_COLUMNS.to_f).ceil
 end
@@ -47,14 +58,12 @@ rescue ArgumentError
 end
 
 def generate_permission_string(file_mode)
-  permission_list = { '0' => '---', '1' => '--x', '2' => '-w-', '3' => '-wx', '4' => 'r--', '5' => 'r-x', '6' => 'rw-',
-                      '7' => 'rwx' }
   permissions =
     file_mode
     .to_s(8)
     .slice(-3, 3)
     .chars
-    .map { |permission_number| permission_list[permission_number] }
+    .map { |permission_number| PERMISSION_LIST[permission_number] }
   permissions.join
 end
 
