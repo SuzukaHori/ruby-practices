@@ -81,35 +81,40 @@ def get_file_type(mode)
   TYPE_LIST[format('%06o', mode)[0, 2]]
 end
 
-def align_file_infos(file_infos, info_lengths)
-  file_infos.each do |file_info|
-    INFO_KEYS.each do |key|
-      max_size = info_lengths[key].max
-      file_info[key] = if %i[user_name group_name file_name].include?(key)
-                         file_info[key].ljust(max_size)
+def align_file_infos(file_infos)
+  blanks = {}
+  INFO_KEYS.each do |key|
+    lengths = file_infos.map { |file_info| file_info[key].length }
+    blanks[key] = if %i[hard_link_count group_name size].include?(key)
+                             lengths.max + 1
+                           else
+                             lengths.max # 「最も長い要素+余白」の長さを取得する。
+                           end
+    file_infos.map do |file_info|
+      file_info[key] = if %i[user_name group_name file_name].include?(key) # すべての要素をcolumn_spacingに合わせて整形する
+                         file_info[key].ljust(blanks[key])
                        else
-                         file_info[key].rjust(max_size)
+                         file_info[key].rjust(blanks[key])
                        end
     end
   end
+  file_infos
 end
 
 def process_l_option(file_names)
   file_infos = []
   file_blocks = []
-  info_lengths = Hash.new { |hash, key| hash[key] = [] }
 
   file_names.each do |file_name|
     file_status = File.stat(file_name)
     current_file_info = build_file_info(file_name, file_status)
     file_infos << current_file_info
-    store_blocks_and_length(info_lengths, current_file_info, file_blocks, file_status)
+    store_blocks(file_blocks, file_status)
   end
-  [file_blocks.sum, align_file_infos(file_infos, info_lengths)]
+  [file_blocks.sum, align_file_infos(file_infos)]
 end
 
-def store_blocks_and_length(info_lengths, current_file_info, file_blocks, file_status)
-  INFO_KEYS.each { |key| info_lengths[key] << current_file_info[key].length }
+def store_blocks(file_blocks, file_status)
   file_blocks << file_status.blocks
 end
 
@@ -124,8 +129,7 @@ if options[:l]
   total_file_blocks, formatted_file_infos = process_l_option(files)
   puts "total #{total_file_blocks}"
   formatted_file_infos.each do |file_info|
-    file_info.each do |key, value|
-      print ' ' if %i[hard_link_count group_name size].include?(key)
+    file_info.each_value do |value|
       print "#{value} "
     end
     puts
