@@ -85,10 +85,10 @@ def align_file_infos(file_infos)
   blanks = {}
   INFO_KEYS.each do |key|
     lengths = file_infos.map { |file_info| file_info[key].length }
-    blanks[key] = if %i[hard_link_count group_name size].include?(key)
+    blanks[key] = if %i[hard_link_count group_name size].include?(key) # 「最も長い要素+余白」の長さを取得する。
                              lengths.max + 1
                            else
-                             lengths.max # 「最も長い要素+余白」の長さを取得する。
+                             lengths.max
                            end
     file_infos.map do |file_info|
       file_info[key] = if %i[user_name group_name file_name].include?(key) # すべての要素をcolumn_spacingに合わせて整形する
@@ -101,21 +101,22 @@ def align_file_infos(file_infos)
   file_infos
 end
 
-def process_l_option(file_names)
+def create_file_infos(file_names)
   file_infos = []
-  file_blocks = []
-
   file_names.each do |file_name|
     file_status = File.stat(file_name)
     current_file_info = build_file_info(file_name, file_status)
     file_infos << current_file_info
-    store_blocks(file_blocks, file_status)
   end
-  [file_blocks.sum, align_file_infos(file_infos)]
+align_file_infos(file_infos)
 end
 
-def store_blocks(file_blocks, file_status)
-  file_blocks << file_status.blocks
+def create_total_blocks(file_names)
+  file_blocks = []
+  file_names.each do |file_name|
+    file_blocks << File.stat(file_name).blocks
+  end
+  file_blocks.sum
 end
 
 opt = OptionParser.new
@@ -126,9 +127,10 @@ opt.parse!(ARGV, into: options)
 files = Dir.glob('*', base: ARGV.join)
 
 if options[:l]
-  total_file_blocks, formatted_file_infos = process_l_option(files)
+  total_file_blocks = create_total_blocks(files)
+  file_infos = create_file_infos(files)
   puts "total #{total_file_blocks}"
-  formatted_file_infos.each do |file_info|
+ file_infos.each do |file_info|
     file_info.each_value do |value|
       print "#{value} "
     end
