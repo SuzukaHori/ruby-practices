@@ -26,6 +26,16 @@ PERMISSION_LIST = {
   '7' => 'rwx'
 }.freeze
 
+TYPE_LIST = {
+  '01' => 'p',
+  '02' => 'c',
+  '04' => 'd',
+  '06' => 'b',
+  '10' => '-',
+  '12' => 'l',
+  '14' => 's'
+}.freeze
+
 def calculate_number_of_rows(files)
   (files.size / NUMBER_OF_COLUMNS.to_f).ceil
 end
@@ -68,16 +78,7 @@ def generate_permission_string(file_mode)
 end
 
 def get_file_type(mode)
-  type_list = {
-    '01' => 'p',
-    '02' => 'c',
-    '04' => 'd',
-    '06' => 'b',
-    '10' => '-',
-    '12' => 'l',
-    '14' => 's'
-  }
-  type_list[format('%06o', mode)[0, 2]]
+  TYPE_LIST[format('%06o', mode)[0, 2]]
 end
 
 def align_file_infos(file_infos, info_lengths)
