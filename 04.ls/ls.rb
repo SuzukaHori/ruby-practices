@@ -114,7 +114,7 @@ def get_file_infos(file_names)
   align_file_infos(file_infos)
 end
 
-def create_total_blocks(file_names)
+def calculate_total_blocks(file_names)
   file_blocks = []
   file_names.each do |file_name|
     file_blocks << File.stat(file_name).blocks
@@ -130,7 +130,7 @@ opt.parse!(ARGV, into: options)
 files = Dir.glob('*', base: ARGV.join)
 
 if options[:l]
-  total_file_blocks = create_total_blocks(files)
+  total_file_blocks = calculate_total_blocks(files)
   file_infos = get_file_infos(files)
   puts "total #{total_file_blocks}"
   file_infos.each do |file_info|
