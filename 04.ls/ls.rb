@@ -49,7 +49,8 @@ def format_files(files, number_of_rows)
     .transpose
 end
 
-def build_file_info(file_name, file_status)
+def build_file_info(file_name)
+  file_status = File.stat(file_name)
   file_mode = file_status.mode
   { type_and_permission:
       get_file_type(file_mode) + generate_permission_string(file_mode),
@@ -82,33 +83,35 @@ def get_file_type(mode)
 end
 
 def align_file_infos(file_infos)
-  blanks = {}
   INFO_KEYS.each do |key|
-    lengths = file_infos.map { |file_info| file_info[key].length }
-    blanks[key] = if %i[hard_link_count group_name size].include?(key) # 「最も長い要素+余白」の長さを取得する。
-                             lengths.max + 1
-                           else
-                             lengths.max
-                           end
+    max_length = file_infos.map do |file_info|
+      file_info[key].length
+    end.max
     file_infos.map do |file_info|
-      file_info[key] = if %i[user_name group_name file_name].include?(key) # すべての要素をcolumn_spacingに合わせて整形する
-                         file_info[key].ljust(blanks[key])
-                       else
-                         file_info[key].rjust(blanks[key])
-                       end
+      current_value = file_info[key]
+      file_info[key] =
+        case key
+        when :user_name
+          current_value.ljust(max_length + 1)
+        when :hard_link_count, :size
+          current_value.rjust(max_length + 1)
+        when :group_name, :file_name
+          current_value.ljust(max_length)
+        else
+          current_value
+        end
     end
   end
   file_infos
 end
 
-def create_file_infos(file_names)
+def get_file_infos(file_names)
   file_infos = []
   file_names.each do |file_name|
-    file_status = File.stat(file_name)
-    current_file_info = build_file_info(file_name, file_status)
+    current_file_info = build_file_info(file_name)
     file_infos << current_file_info
   end
-align_file_infos(file_infos)
+  align_file_infos(file_infos)
 end
 
 def create_total_blocks(file_names)
@@ -128,9 +131,9 @@ files = Dir.glob('*', base: ARGV.join)
 
 if options[:l]
   total_file_blocks = create_total_blocks(files)
-  file_infos = create_file_infos(files)
+  file_infos = get_file_infos(files)
   puts "total #{total_file_blocks}"
- file_infos.each do |file_info|
+  file_infos.each do |file_info|
     file_info.each_value do |value|
       print "#{value} "
     end
