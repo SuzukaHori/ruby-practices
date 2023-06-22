@@ -84,21 +84,20 @@ end
 
 def align_file_infos(file_infos)
   INFO_KEYS.each do |key|
-    max_length = file_infos.map do |file_info|
-      file_info[key].length
-    end.max
+    max_length = file_infos.map { |file_info| file_info[key].length }.max
     file_infos.map do |file_info|
       current_value = file_info[key]
-      file_info[key] =
-        case key
-        when :user_name
-          current_value.ljust(max_length + 1)
-        when :hard_link_count, :size
-          current_value.rjust(max_length + 1)
-        when :group_name, :file_name
-          current_value.ljust(max_length)
+      spacing =
+        if %i[user_name hard_link_count size].include?(key)
+          max_length + 1
         else
-          current_value
+          max_length
+        end
+      file_info[key] =
+        if %i[user_name group_name file_name].include?(key)
+          current_value.ljust(spacing)
+        else
+          current_value.rjust(spacing)
         end
     end
   end
