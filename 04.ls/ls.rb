@@ -49,21 +49,30 @@ def format_files(files, number_of_rows)
     .transpose
 end
 
+def calculate_total_blocks(file_names)
+  file_names.map do |file_name|
+    File.stat(file_name).blocks
+  end.sum
+end
+
+def get_file_infos(file_names)
+  file_infos = file_names.map do |file_name|
+    build_file_info(file_name)
+  end
+  align_file_infos(file_infos)
+end
+
 def build_file_info(file_name)
   file_status = File.stat(file_name)
   file_mode = file_status.mode
   { type_and_permission:
-      get_file_type(file_mode) + generate_permission_string(file_mode),
+      TYPE_LIST[format('%06o', file_mode)[0, 2]] + generate_permission_string(file_mode),
     hard_link_count: file_status.nlink.to_s,
-    user_name: get_user_name(file_status),
+    user_name: Etc.getpwuid(file_status.uid).name,
     group_name: Etc.getgrgid(file_status.gid).name,
     size: file_status.size.to_s,
     timestamp: file_status.mtime.strftime('%_m %e %H:%M'),
     file_name: }
-end
-
-def get_user_name(file_status)
-  Etc.getpwuid(file_status.uid).name
 end
 
 def generate_permission_string(file_mode)
@@ -74,10 +83,6 @@ def generate_permission_string(file_mode)
     .chars
     .map { |permission_number| PERMISSION_LIST[permission_number] }
   permissions.join
-end
-
-def get_file_type(mode)
-  TYPE_LIST[format('%06o', mode)[0, 2]]
 end
 
 def align_file_infos(file_infos)
@@ -100,19 +105,6 @@ def align_file_infos(file_infos)
     end
   end
   file_infos
-end
-
-def get_file_infos(file_names)
-  file_infos = file_names.map do |file_name|
-    build_file_info(file_name)
-  end
-  align_file_infos(file_infos)
-end
-
-def calculate_total_blocks(file_names)
-  file_names.map do |file_name|
-    File.stat(file_name).blocks
-  end.sum
 end
 
 opt = OptionParser.new
