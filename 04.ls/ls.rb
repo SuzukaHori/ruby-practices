@@ -105,7 +105,7 @@ def align_file_infos(file_infos)
 end
 
 def get_file_infos(file_names)
-  file_names.map do |file_name|
+  file_infos = file_names.map do |file_name|
     build_file_info(file_name)
   end
   align_file_infos(file_infos)
@@ -114,8 +114,7 @@ end
 def calculate_total_blocks(file_names)
   file_names.map do |file_name|
     File.stat(file_name).blocks
-  end
-  file_blocks.sum
+  end.sum
 end
 
 opt = OptionParser.new
