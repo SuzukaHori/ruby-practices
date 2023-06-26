@@ -105,10 +105,8 @@ def align_file_infos(file_infos)
 end
 
 def get_file_infos(file_names)
-  file_infos = []
-  file_names.each do |file_name|
-    current_file_info = build_file_info(file_name)
-    file_infos << current_file_info
+  file_names.map do |file_name|
+    build_file_info(file_name)
   end
   align_file_infos(file_infos)
 end
