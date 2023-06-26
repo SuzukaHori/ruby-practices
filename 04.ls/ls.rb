@@ -112,9 +112,8 @@ def get_file_infos(file_names)
 end
 
 def calculate_total_blocks(file_names)
-  file_blocks = []
-  file_names.each do |file_name|
-    file_blocks << File.stat(file_name).blocks
+  file_names.map do |file_name|
+    File.stat(file_name).blocks
   end
   file_blocks.sum
 end
