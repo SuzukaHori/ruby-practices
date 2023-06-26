@@ -64,8 +64,6 @@ end
 
 def get_user_name(file_status)
   Etc.getpwuid(file_status.uid).name
-rescue ArgumentError
-  file_status.uid.to_s
 end
 
 def generate_permission_string(file_mode)
