@@ -50,9 +50,7 @@ def format_files(files, number_of_rows)
 end
 
 def get_file_infos(file_names)
-  file_infos = file_names.map do |file_name|
-    build_file_info(file_name)
-  end
+  file_infos = file_names.map { |file_name| build_file_info(file_name) }
   align_file_infos(file_infos)
 end
 
