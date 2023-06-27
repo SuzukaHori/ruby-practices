@@ -49,12 +49,6 @@ def format_files(files, number_of_rows)
     .transpose
 end
 
-def calculate_total_blocks(file_names)
-  file_names.map do |file_name|
-    File.stat(file_name).blocks
-  end.sum
-end
-
 def get_file_infos(file_names)
   file_infos = file_names.map do |file_name|
     build_file_info(file_name)
@@ -115,7 +109,7 @@ opt.parse!(ARGV, into: options)
 files = Dir.glob('*', base: ARGV.join)
 
 if options[:l]
-  total_file_blocks = calculate_total_blocks(files)
+  total_file_blocks = files.sum { |file| File.stat(file).blocks }
   file_infos = get_file_infos(files)
   puts "total #{total_file_blocks}"
   file_infos.each do |file_info|
