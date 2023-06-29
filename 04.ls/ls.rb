@@ -129,7 +129,7 @@ def align_file_details(file_details)
         else
           max_length
         end
-      file_info[key] =
+      file_detail[key] =
         if %i[user_name group_name file_name].include?(key)
           current_value.ljust(spacing)
         else
