@@ -99,21 +99,32 @@ def align_file_infos(file_infos)
   file_infos
 end
 
-opt = OptionParser.new
-options = {}
-opt.on('-l')
-opt.parse!(ARGV, into: options)
+def set_options
+  opt = OptionParser.new
+  options = {}
+  opt.on("-l")
+  opt.on("-a")
+  opt.on("-r")
+  opt.parse!(ARGV, into: options)
+  options
+end
 
-files = Dir.glob('*', base: ARGV.join)
+options = set_options
+
+files =
+  if options[:a]
+    Dir.glob("*", File::FNM_DOTMATCH, base: ARGV.join)
+  else
+    Dir.glob("*", base: ARGV.join)
+  end
+files = files.reverse if options[:r]
 
 if options[:l]
   total_file_blocks = files.sum { |file| File.stat(file).blocks }
   file_infos = get_file_infos(files)
   puts "total #{total_file_blocks}"
   file_infos.each do |file_info|
-    file_info.each_value do |value|
-      print "#{value} "
-    end
+    file_info.each_value { |value| print "#{value} " }
     puts
   end
 else
