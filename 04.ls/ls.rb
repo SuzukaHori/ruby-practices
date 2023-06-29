@@ -36,6 +36,37 @@ TYPE_LIST = {
   '14' => 's'
 }.freeze
 
+def main
+  options = parse_command_line_options
+  files =
+    if options[:a]
+      Dir.glob('*', File::FNM_DOTMATCH, base: ARGV.join)
+    else
+      Dir.glob('*', base: ARGV.join)
+    end
+  files = files.reverse if options[:r]
+
+  if options[:l]
+    print_file_details(files)
+  else
+    number_of_rows = calculate_number_of_rows(files)
+    unless files.empty?
+      formatted_files = format_files(files, number_of_rows)
+      formatted_files.each { |file| print(*file, "\n") }
+    end
+  end
+end
+
+def parse_command_line_options
+  opt = OptionParser.new
+  options = {}
+  opt.on('-l')
+  opt.on('-a')
+  opt.on('-r')
+  opt.parse!(ARGV, into: options)
+  options
+end
+
 def calculate_number_of_rows(files)
   (files.size / NUMBER_OF_COLUMNS.to_f).ceil
 end
@@ -49,12 +80,22 @@ def format_files(files, number_of_rows)
     .transpose
 end
 
-def get_file_infos(file_names)
-  file_infos = file_names.map { |file_name| build_file_info(file_name) }
-  align_file_infos(file_infos)
+def print_file_details(files)
+  total_file_blocks = files.sum { |file| File.stat(file).blocks }
+  file_details = get_file_details(files)
+  puts "total #{total_file_blocks}"
+  file_details.each do |file_detail|
+    file_detail.each_value { |value| print "#{value} " }
+    puts
+  end
 end
 
-def build_file_info(file_name)
+def get_file_details(file_names)
+  file_details = file_names.map { |file_name| build_file_detail(file_name) }
+  align_file_details(file_details)
+end
+
+def build_file_detail(file_name)
   file_status = File.stat(file_name)
   file_mode = file_status.mode
   { type_and_permission:
@@ -77,11 +118,11 @@ def generate_permission_string(file_mode)
   permissions.join
 end
 
-def align_file_infos(file_infos)
+def align_file_details(file_details)
   INFO_KEYS.each do |key|
-    max_length = file_infos.map { |file_info| file_info[key].length }.max
-    file_infos.map do |file_info|
-      current_value = file_info[key]
+    max_length = file_details.map { |file_detail| file_detail[key].length }.max
+    file_details.map do |file_detail|
+      current_value = file_detail[key]
       spacing =
         if %i[user_name hard_link_count size].include?(key)
           max_length + 1
@@ -96,41 +137,7 @@ def align_file_infos(file_infos)
         end
     end
   end
-  file_infos
+  file_details
 end
 
-def set_options
-  opt = OptionParser.new
-  options = {}
-  opt.on("-l")
-  opt.on("-a")
-  opt.on("-r")
-  opt.parse!(ARGV, into: options)
-  options
-end
-
-options = set_options
-
-files =
-  if options[:a]
-    Dir.glob("*", File::FNM_DOTMATCH, base: ARGV.join)
-  else
-    Dir.glob("*", base: ARGV.join)
-  end
-files = files.reverse if options[:r]
-
-if options[:l]
-  total_file_blocks = files.sum { |file| File.stat(file).blocks }
-  file_infos = get_file_infos(files)
-  puts "total #{total_file_blocks}"
-  file_infos.each do |file_info|
-    file_info.each_value { |value| print "#{value} " }
-    puts
-  end
-else
-  number_of_rows = calculate_number_of_rows(files)
-  unless files.empty?
-    formatted_files = format_files(files, number_of_rows)
-    formatted_files.each { |file| print(*file, "\n") }
-  end
-end
+main
