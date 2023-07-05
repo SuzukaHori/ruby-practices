@@ -37,7 +37,7 @@ TYPE_LIST = {
 }.freeze
 
 def main
-  options = parse_command_line_options
+  options = parse_options
   files =
     if options[:a]
       Dir.glob('*', File::FNM_DOTMATCH, base: ARGV.join)
@@ -57,7 +57,7 @@ def main
   end
 end
 
-def parse_command_line_options
+def parse_options
   opt = OptionParser.new
   options = {}
   opt.on('-l')
