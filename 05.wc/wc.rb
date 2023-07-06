@@ -39,7 +39,7 @@ def create_details_from_arguments
   file_details
 end
 
-def create_detail(file_data, name = nil)#メソッド名
+def create_detail(file_data, name = nil)
   {
     lines_count: file_data.lines.count,
     words_count: file_data.scan(/[\t\n\r ]+/).size,
