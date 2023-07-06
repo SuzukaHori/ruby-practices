@@ -137,11 +137,11 @@ def align_file_details(file_details)
 end
 
 def print_files(files)
-  number_of_rows = calculate_number_of_rows(files)
-  return if files.empty?
-
-  formatted_files = format_files(files, number_of_rows)
-  formatted_files.each { |file| print(*file, "\n") }
+    number_of_rows = calculate_number_of_rows(files)
+    unless files.empty?
+      formatted_files = format_files(files, number_of_rows)
+      formatted_files.each { |file| print(*file, "\n") }
+    end
 end
 
 main
