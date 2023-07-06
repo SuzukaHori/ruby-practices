@@ -49,11 +49,7 @@ def main
   if options[:l]
     print_file_details(files)
   else
-    number_of_rows = calculate_number_of_rows(files)
-    unless files.empty?
-      formatted_files = format_files(files, number_of_rows)
-      formatted_files.each { |file| print(*file, "\n") }
-    end
+    print_files(files)
   end
 end
 
@@ -138,6 +134,14 @@ def align_file_details(file_details)
     end
   end
   file_details
+end
+
+def print_files(files)
+  number_of_rows = calculate_number_of_rows(files)
+  return if files.empty?
+
+  formatted_files = format_files(files, number_of_rows)
+  formatted_files.each { |file| print(*file, "\n") }
 end
 
 main
