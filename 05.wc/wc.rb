@@ -59,11 +59,11 @@ end
 
 def print_file_details(file_details, options)
   file_details.each do |detail|
-    print detail[:lines_count].to_s.rjust(8) unless options[:w] || options[:c]
-    print detail[:words_count].to_s.rjust(8) unless options[:l] || options[:c]
-    print detail[:bytes_size].to_s.rjust(8) unless options[:l] || options[:w]
+    print detail[:lines_count].to_s.rjust(8) if options.empty? || options[:l]
+    print detail[:words_count].to_s.rjust(8) if options.empty? || options[:w]
+    print detail[:bytes_size].to_s.rjust(8) if options.empty? || options[:c]
     print ' '
-    print detail[:name].to_s.ljust(10)
+    print detail[:name].to_s.ljust(8)
     puts
   end
 end
