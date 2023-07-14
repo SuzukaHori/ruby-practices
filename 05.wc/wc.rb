@@ -42,7 +42,7 @@ end
 def create_detail(file_data, name = nil)
   {
     lines_count: file_data.lines.count,
-    words_count: file_data.scan(/[\t\n\r ]+/).size,
+    words_count: file_data.scan(/.([\t\n\r ]+)/).size,
     bytes_size: file_data.bytesize,
     name:
   }
