@@ -5,7 +5,8 @@ require 'optparse'
 
 def main
   options = parse_options
-  file_details = (ARGV.empty? ? create_details_from_stdin : create_details_from_arguments)
+  file_names = read_file_names
+  file_details = (ARGV.empty? ? create_details_from_stdin : create_details_from_arguments(file_names))
   print_file_details(file_details, options)
 end
 
@@ -19,14 +20,17 @@ def parse_options
   options
 end
 
+def read_file_names
+  ARGV
+end
+
 def create_details_from_stdin
   file_names_string = $stdin.read
   files_detail = create_detail(file_names_string)
   [files_detail]
 end
 
-def create_details_from_arguments
-  file_names = ARGV
+def create_details_from_arguments(file_names)
   file_details =
     file_names.map do |file_name|
       file_data = File.read(file_name)
