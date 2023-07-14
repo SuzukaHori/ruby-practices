@@ -6,7 +6,7 @@ require 'optparse'
 def main
   options = parse_options
   file_names = ARGV
-  file_details = (ARGV.empty? ? create_details_from_stdin : create_details_from_arguments(file_names))
+  file_details = (file_names.empty? ? create_details_from_stdin : create_details_from_arguments(file_names))
   print_file_details(file_details, options)
 end
 
