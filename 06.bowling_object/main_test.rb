@@ -19,7 +19,7 @@ class MainTest < Minitest::Test
   end
 
   def test_case_three
-    ARGV.replace(['X,X,X,X,X,X,X,X,X,X,X,X '])
+    ARGV.replace(['X,X,X,X,X,X,X,X,X,X,X,X'])
     $stdout = StringIO.new
     main
 

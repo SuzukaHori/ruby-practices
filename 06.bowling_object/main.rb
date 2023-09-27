@@ -6,10 +6,9 @@ def main
   game = Game.new(frames)
   puts game.total
 end
-# Frame.new(first_mark, second_mark, )できる形に変換する
 
 def format_score(score)
-  frames = []
+  frames = [] # Frame.new(first_mark, second_mark, )できる形に変換する
   n = 0
   while n < score.length
     scores = score.split(',')
