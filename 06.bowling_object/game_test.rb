@@ -6,10 +6,10 @@ class GameTest < Minitest::Test
     game = Game.new([%w[6 3], %w[9 0], %w[0 3], %w[8 2], %w[7 3], ['X'], %w[9 1], %w[8 0], ['X'], %w[6 4 5]])
     assert_equal 139, game.total
 
-    game = Game.new([["6", "3"], ["9", "0"], ["0", "3"], ["8", "2"], ["7", "3"], ["X"], ["9", "1"], ["8", "0"], ["X"], ["X", "X", "X"]])
+    game = Game.new([%w[6 3], %w[9 0], %w[0 3], %w[8 2], %w[7 3], ['X'], %w[9 1], %w[8 0], ['X'], %w[X X X]])
     assert_equal 164, game.total
 
-    game = Game.new([['X'], ['X'], ['X'], ['X'], ['X'], ['X'], ['X'], ['X'], ['X'], ['X', 'X', 'X']])
+    game = Game.new([['X'], ['X'], ['X'], ['X'], ['X'], ['X'], ['X'], ['X'], ['X'], %w[X X X]])
     assert_equal 300, game.total
   end
 
@@ -29,7 +29,7 @@ class GameTest < Minitest::Test
   end
 
   def test_last_frame_strike
-    game = Game.new([['X'], ['X'], ['X', 'X', 'X']]) # 最終フレームがストライクの場合、フレームの合計を足す
+    game = Game.new([['X'], ['X'], %w[X X X]]) # 最終フレームがストライクの場合、フレームの合計を足す
     assert_equal 90, game.total
   end
 end

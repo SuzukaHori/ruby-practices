@@ -7,11 +7,11 @@ class Frame
     @first_shot = Shot.new(first_mark)
     @second_shot = Shot.new(second_mark)
     @third_shot = Shot.new(third_mark)
-    set_status(first_mark, second_mark, third_mark)
+    set_status(first_mark, second_mark, third_mark) # TODO: これいらない
   end
 
   def score
-    first_shot.score + second_shot.score + third_shot&.score # TODO: ストライク・スペアの処理
+    first_shot.score + second_shot.score + third_shot&.score
   end
 
   private
