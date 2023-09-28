@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'test/unit'
-require_relative './frame'
+require_relative '../frame.rb'
 
 class FrameTest < Test::Unit::TestCase
   test '1投目がストライクの場合、フレームは10点' do

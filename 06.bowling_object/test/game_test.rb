@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'test/unit'
-require_relative './game'
+require_relative '../game'
 
 class GameTest < Test::Unit::TestCase
   test '合計得点を単純に計算する' do

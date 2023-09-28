@@ -4,21 +4,20 @@ require_relative './game'
 
 def main
   score = ARGV[0]
-  frames = format_score(score)
+  frames = separate_into_frames(score.split(','))
   game = Game.new(frames)
   puts game.total
 end
 
-def format_score(score)
-  frames = [] # Frame.new(first_mark, second_mark, )できる形に変換する
+def separate_into_frames(scores)
+  frames = []
   n = 0
-  while n < score.length
-    scores = score.split(',')
+  while n < scores.length
     if scores[n] == 'X'
       frames << ['X']
       n += 1
     else
-      frames << [scores[n], scores[n + 1]].compact
+      frames << scores[n, 2]
       n += 2
     end
   end

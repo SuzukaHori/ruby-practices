@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'test/unit'
-require_relative './main'
+require_relative '../main'
 require 'stringio'
 
 class MainTest < Test::Unit::TestCase

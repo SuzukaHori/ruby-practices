@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'test/unit'
-require_relative './shot'
+require_relative '../shot'
 
 class ShotTest < Test::Unit::TestCase
   test 'ストライクの時は10点になる' do
