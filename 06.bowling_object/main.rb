@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative './game'
 
 def main
@@ -23,3 +25,5 @@ def format_score(score)
   frames[9].push(*frames.pop) while frames[10]
   frames
 end
+
+main if __FILE__ == $PROGRAM_NAME
