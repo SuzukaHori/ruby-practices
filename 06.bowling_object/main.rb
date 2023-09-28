@@ -6,7 +6,7 @@ def main
   score = ARGV[0]
   frames = separate_into_frames(score.split(','))
   game = Game.new(frames)
-  puts game.total
+  puts game.score
 end
 
 def separate_into_frames(scores)

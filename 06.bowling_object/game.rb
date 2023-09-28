@@ -9,7 +9,7 @@ class Game
     @frames = frames.map { |frame| Frame.new(*frame) }
   end
 
-  def total
+  def score
     frames.each_with_index.sum do |frame, index|
       if frame.first_shot.mark == 'X'
         calculate_strike_frame(*frames[index, 3])
