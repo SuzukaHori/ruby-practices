@@ -3,13 +3,13 @@
 require_relative './game'
 
 def main
-  score = ARGV[0]
-  frames = separate_into_frames(score.split(','))
+  frames = parse_frames(ARGV[0])
   game = Game.new(frames)
   puts game.score
 end
 
-def separate_into_frames(scores)
+def parse_frames(argv)
+  scores = argv.split(',')
   frames = []
   n = 0
   while n < scores.length
