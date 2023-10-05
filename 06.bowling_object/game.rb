@@ -11,9 +11,9 @@ class Game
 
   def score
     frames.each_with_index.sum do |frame, index|
-      if frame.first_shot.mark == 'X'
+      if frame.strike?
         calculate_strike_frame(*frames[index, 3])
-      elsif frame.first_shot.score + frame.second_shot.score == Shot::STRIKE_POINT
+      elsif frame.spare?
         next_frame = frames[index + 1]
         next_frame.nil? ? frame.score : Shot::STRIKE_POINT + next_frame.first_shot.score
       else
@@ -27,7 +27,7 @@ class Game
   def calculate_strike_frame(current_frame, next_frame = nil, next_next_frame = nil)
     return current_frame.score if next_frame.nil?
 
-    if next_frame.first_shot.mark == 'X'
+    if next_frame.strike?
       if next_next_frame.nil?
         Shot::STRIKE_POINT * 2 + next_frame.second_shot.score
       else
