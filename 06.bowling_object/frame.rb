@@ -16,10 +16,10 @@ class Frame
   end
 
   def strike?
-    first_shot.score == Shot::STRIKE_POINT
+    first_shot.score == Shot::MAX_POINTS
   end
 
   def spare?
-    first_shot.score + second_shot.score == Shot::STRIKE_POINT
+    first_shot.score + second_shot.score == Shot::MAX_POINTS
   end
 end

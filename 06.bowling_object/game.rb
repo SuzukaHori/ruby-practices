@@ -15,7 +15,7 @@ class Game
         calculate_strike_frame(*frames[index, 3])
       elsif frame.spare?
         next_frame = frames[index + 1]
-        next_frame.nil? ? frame.score : Shot::STRIKE_POINT + next_frame.first_shot.score
+        next_frame.nil? ? frame.score : Shot::MAX_POINTS + next_frame.first_shot.score
       else
         frame.score
       end
@@ -29,12 +29,12 @@ class Game
 
     if next_frame.strike?
       if next_next_frame.nil?
-        Shot::STRIKE_POINT * 2 + next_frame.second_shot.score
+        Shot::MAX_POINTS * 2 + next_frame.second_shot.score
       else
-        Shot::STRIKE_POINT * 2 + next_next_frame.first_shot.score
+        Shot::MAX_POINTS * 2 + next_next_frame.first_shot.score
       end
     else
-      Shot::STRIKE_POINT + next_frame.first_shot.score + next_frame.second_shot.score
+      Shot::MAX_POINTS + next_frame.first_shot.score + next_frame.second_shot.score
     end
   end
 end
