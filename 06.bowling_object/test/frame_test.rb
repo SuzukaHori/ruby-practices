@@ -9,12 +9,12 @@ class FrameTest < Test::Unit::TestCase
     assert_equal 10, frame.score
   end
 
-  test '1投目がストライクでなければ、通常通り2投投げる' do
+  test '1投目がストライクでなければ、フレームは1~2投目を合計した得点' do
     frame = Frame.new('1', '9')
     assert_equal 10, frame.score
   end
 
-  test '最終フレームでスペアストライクなら、3投目を投げられる' do
+  test '最終フレームでスペアかストライクなら、フレームは1~3投目を合計した得点' do
     frame = Frame.new('1', '9', 'X')
     assert_equal 20, frame.score
   end
