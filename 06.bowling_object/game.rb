@@ -30,11 +30,11 @@ class Game
     frames = []
     n = 0
     while n < scores.length
-      if frames.size == 9 && scores[n..].size == 3 # 最終フレームに3投目を投げた場合
+      if frames.size == 9 && scores[n..].size == 3
         frames << Frame.new(*scores[n, 3])
         break
-      elsif scores[n] == 'X' # TODO: Xを変更
-        frames << Frame.new('X')
+      elsif scores[n] == Shot::STRIKE_MARK
+        frames << Frame.new(*scores[n])
         n += 1
       else
         frames << Frame.new(*scores[n, 2])
