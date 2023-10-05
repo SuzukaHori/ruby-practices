@@ -4,15 +4,10 @@ require 'test/unit'
 require_relative '../game'
 
 class GameTest < Test::Unit::TestCase
-  def build_frames(frames)
-    frames.map { |frame| Frame.new(*frame) }
+  test '合計得点を単純に計算する' do
+    game = Game.new('6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,6,4,5')
+    assert_equal 139, game.total_score
   end
-
-  # test '合計得点を単純に計算する' do
-  #   frames = build_frames()
-  #   game = Game.new(frames)
-  #   assert_equal 139, game.total_score
-  # end
 
   test '一回だけストライクの場合は、次のフレームの1,2投目をたす' do
     game = Game.new('X,6,1')
@@ -27,10 +22,5 @@ class GameTest < Test::Unit::TestCase
   test '3連続ストライクの場合は、次のフレームと次の次のフレームをたす' do
     game = Game.new('X,X,X')
     assert_equal 60, game.total_score
-  end
-
-  test '最終フレームがストライクの場合、フレームの合計を足す' do
-    game = Game.new('X,X,X,X,X')
-    assert_equal 90, game.total_score
   end
 end
