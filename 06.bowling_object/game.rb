@@ -5,7 +5,8 @@ require_relative './frame'
 class Game
   attr_reader :frames
 
-  def initialize(frames)
+  def initialize(argv)
+    frames = build_frames(argv)
     @frames = frames
   end
 
@@ -23,6 +24,25 @@ class Game
   end
 
   private
+
+  def build_frames(argv)
+    scores = argv.split(',')
+    frames = []
+    n = 0
+    while n < scores.length
+      if frames.size == 9 && scores[n..].size == 3 # 最終フレームに3投目を投げた場合
+        frames << Frame.new(*scores[n, 3])
+        break
+      elsif scores[n] == 'X' # TODO: Xを変更
+        frames << Frame.new('X')
+        n += 1
+      else
+        frames << Frame.new(*scores[n, 2])
+        n += 2
+      end
+    end
+    frames
+  end
 
   def calculate_strike_frame(current_frame, next_frame = nil, next_next_frame = nil)
     return current_frame.shots_sum if next_frame.nil?
