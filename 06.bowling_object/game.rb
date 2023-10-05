@@ -5,6 +5,8 @@ require_relative './frame'
 class Game
   attr_reader :frames
 
+  NUMBER_OF_FRAMES = 10
+
   def initialize(argv)
     frames = build_frames(argv)
     @frames = frames
@@ -30,7 +32,7 @@ class Game
     frames = []
     n = 0
     while n < scores.length
-      if frames.size == 9 && scores[n..].size == 3
+      if frames.size == NUMBER_OF_FRAMES - 1 && scores[n..].size == 3
         frames << Frame.new(*scores[n, 3])
         break
       elsif scores[n] == Shot::STRIKE_MARK
