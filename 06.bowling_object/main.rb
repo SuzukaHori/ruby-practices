@@ -5,7 +5,7 @@ require_relative './game'
 def main
   frames = parse_frames(ARGV[0])
   game = Game.new(frames)
-  puts game.score
+  puts game.total_score
 end
 
 def parse_frames(argv)

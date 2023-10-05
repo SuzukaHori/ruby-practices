@@ -9,7 +9,7 @@ class Shot
     @mark = mark
   end
 
-  def score
+  def point
     mark == 'X' ? MAX_POINTS : mark.to_i
   end
 end

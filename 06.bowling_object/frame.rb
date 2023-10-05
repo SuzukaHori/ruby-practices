@@ -11,15 +11,15 @@ class Frame
     @third_shot = Shot.new(third_mark)
   end
 
-  def score
-    first_shot.score + second_shot.score + third_shot.score
+  def shots_sum
+    first_shot.point + second_shot.point + third_shot.point
   end
 
   def strike?
-    first_shot.score == Shot::MAX_POINTS
+    first_shot.point == Shot::MAX_POINTS
   end
 
   def spare?
-    first_shot.score + second_shot.score == Shot::MAX_POINTS
+    first_shot.point + second_shot.point == Shot::MAX_POINTS
   end
 end
