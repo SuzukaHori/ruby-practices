@@ -6,7 +6,7 @@ class Game
   attr_reader :frames
 
   def initialize(frames)
-    @frames = frames.map { |frame| Frame.new(*frame) }
+    @frames = frames
   end
 
   def score

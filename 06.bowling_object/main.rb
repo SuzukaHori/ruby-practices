@@ -13,15 +13,17 @@ def parse_frames(argv)
   frames = []
   n = 0
   while n < scores.length
-    if scores[n] == 'X'
-      frames << ['X']
+    if frames.size == 9 && scores[n..].size == 3 # 最終フレームに3投目を投げた場合
+      frames << Frame.new(*scores[n, 3])
+      n += 3
+    elsif scores[n] == 'X' # TODO: Xを変更
+      frames << Frame.new('X')
       n += 1
     else
-      frames << scores[n, 2]
+      frames << Frame.new(*scores[n, 2])
       n += 2
     end
   end
-  frames[9].push(*frames.pop) while frames[10]
   frames
 end
 
