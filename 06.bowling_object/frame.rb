@@ -16,14 +16,10 @@ class Frame
   end
 
   def strike?
-    return true if first_shot.score == Shot::STRIKE_POINT
-
-    false
+    first_shot.score == Shot::STRIKE_POINT
   end
 
   def spare?
-    return true if first_shot.score + second_shot.score == Shot::STRIKE_POINT
-
-    false
+    first_shot.score + second_shot.score == Shot::STRIKE_POINT
   end
 end

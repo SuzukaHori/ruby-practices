@@ -10,8 +10,6 @@ class Shot
   end
 
   def score
-    return STRIKE_POINT if mark == 'X'
-
-    mark.to_i
+    mark == 'X' ? STRIKE_POINT : mark.to_i
   end
 end
