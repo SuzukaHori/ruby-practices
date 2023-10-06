@@ -8,8 +8,7 @@ class Game
   NUMBER_OF_FRAMES = 10
 
   def initialize(argv)
-    frames = build_frames(argv)
-    @frames = frames
+    @frames = build_frames(argv)
   end
 
   def total_score
