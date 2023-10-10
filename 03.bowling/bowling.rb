@@ -16,29 +16,29 @@ end
 frames = shots.each_slice(2).to_a
 frames[9].push(*frames.pop) while frames[10]
 
-STRIKE_POINT = 10
+MAX_POINTS = 10
 
 def calculate_strike(current_frame, next_frame = nil, next_next_frame = nil)
   return current_frame.sum if next_frame.nil?
 
-  if next_frame[0] == STRIKE_POINT
+  if next_frame[0] == MAX_POINTS
     if next_next_frame.nil?
-      STRIKE_POINT * 2 + next_frame[2]
+      MAX_POINTS * 2 + next_frame[2]
     else
-      STRIKE_POINT * 2 + next_next_frame[0]
+      MAX_POINTS * 2 + next_next_frame[0]
     end
   else
-    STRIKE_POINT + next_frame[0] + next_frame[1]
+    MAX_POINTS + next_frame[0] + next_frame[1]
   end
 end
 
 point =
   frames.each_with_index.sum do |frame, index|
-    if frame[0] == STRIKE_POINT
+    if frame[0] == MAX_POINTS
       calculate_strike(*frames[index, 3])
-    elsif frame.first(2).sum == STRIKE_POINT
+    elsif frame.first(2).sum == MAX_POINTS
       next_frame = frames[index + 1]
-      next_frame.nil? ? frame.sum : STRIKE_POINT + next_frame[0]
+      next_frame.nil? ? frame.sum : MAX_POINTS + next_frame[0]
     else
       frame.sum
     end
