@@ -49,10 +49,18 @@ class ReverseList < List
   end
 end
 
+class AllList < List
+  def initialize
+    file_names = Dir.glob('*', File::FNM_DOTMATCH)
+    @files = create_formatted_files(file_names)
+  end
+end
+
 def parse_options(argv)
   opt = OptionParser.new
   options = {}
   opt.on('-r')
+  opt.on('-a')
   opt.parse!(argv, into: options)
   options
 end
@@ -61,6 +69,8 @@ options = parse_options(ARGV)
 
 list = if options[:r]
          ReverseList.new
+       elsif options[:a]
+         AllList.new
        else
          List.new
        end
