@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative './file_info'
 
 class ListCommand
@@ -7,7 +9,7 @@ class ListCommand
 
   def initialize(argv = nil)
     @options = parse_options(argv)
-    @files = generate_files(argv)
+    @files = generate_files(argv) # 名前揺れ
   end
 
   def display_file_name
@@ -15,28 +17,27 @@ class ListCommand
     number_of_rows = (files.size / NUMBER_OF_COLUMNS.to_f).ceil
 
     spaced_files = files.each_with_object([]) do |file, array|
-      array << FileInfo.new(file.name.ljust(column_spacing))
+      array << file.name.ljust(column_spacing)
     end
     formatted_files = spaced_files.each_slice(number_of_rows).to_a.each { |group| group << nil while group.size < number_of_rows }.transpose
 
     formatted_files.each do |block|
-      block.each { |file| print file&.name }
+      block.each { |file| print file }
       print "\n"
     end
   end
 
   def display_details
-    files.each(&:detail_new)
     files.each do |file|
-      FileDetail::ITEMS.each do |key|
-        max_length = files.map { |file| file.detail.value_length(key) }.max
+      FileInfo::ITEMS.each do |key|
+        max_length = files.map { |file| file.value_length(key) }.max
         spacing =
           if %i[@user_name @hard_link_count @size].include?(key)
             max_length + 1
           else
             max_length
           end
-        print "#{file.detail.align(key, spacing)} "
+        print "#{file.align(key, spacing)} "
       end
       puts
     end
