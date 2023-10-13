@@ -2,26 +2,12 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require_relative './list'
+require_relative './list_command'
 
-def parse_options(argv)
-  opt = OptionParser.new
-  options = {}
-  opt.on('-l')
-  opt.parse!(argv, into: options)
-  options
-end
+list_command = ListCommand.new(ARGV)
 
-options = parse_options(ARGV)
-
-if options[:l]
-  list = List.new
-  list.files.each do |file|
-    file.build_detail
-    p file.detail
-  end
+if list_command.options[:l]
+  list_command.display_details
 else
-  list = List.new
-  formatted_files = list.format_file_names
-  list.display(formatted_files)
+  list_command.display_file_name
 end
