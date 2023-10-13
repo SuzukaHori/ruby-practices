@@ -1,6 +1,6 @@
-require_relative './fileinfo'
+require_relative './file_info'
 
-class List # フォーマッターとかプリンターとかがいい？
+class ListCommand
   attr_reader :files, :column_spacing, :number_of_rows
 
   NUMBER_OF_COLUMNS = 3
@@ -9,16 +9,10 @@ class List # フォーマッターとかプリンターとかがいい？
     @files = generate_files(Dir.glob('*'))
   end
 
-  def display(formatted_files)
+  def display_file_name(formatted_files)
     formatted_files.each do |block|
       block.each { |file| print file&.name }
       print "\n"
-    end
-  end
-
-  def display_file_details(formatted_details)
-    files.each do |file|
-      file.build_detail
     end
   end
 
@@ -32,6 +26,22 @@ class List # フォーマッターとかプリンターとかがいい？
     spaced_files.each_slice(number_of_rows).to_a.each { |group| group << nil while group.size < number_of_rows }.transpose
   end
 
+  def display_details
+    files.each do |file|
+      FileDetail::ITEMS.each do |key|
+        max_length = files.map { |file| file.detail.value_length(key) }.max
+        spacing =
+        if %i[@user_name @hard_link_count @size].include?(key)
+          max_length + 1
+        else
+          max_length
+        end
+        print "#{file.detail.align(key, spacing)} "
+      end
+      puts
+    end
+  end
+
   private
 
   def generate_files(file_names)
@@ -40,3 +50,7 @@ class List # フォーマッターとかプリンターとかがいい？
     end
   end
 end
+
+list = ListCommand.new
+list.files.each(&:detail_new)
+list.display_details
