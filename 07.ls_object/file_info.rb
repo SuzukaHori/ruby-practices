@@ -4,7 +4,7 @@ require 'etc'
 require_relative './permission'
 
 class FileInfo
-  attr_reader :name, :details, :blocks
+  attr_reader :name, :details, :blocks, :path
 
   KEYS = %i[
     type_and_permission
@@ -16,12 +16,13 @@ class FileInfo
     name
   ].freeze
 
-  def initialize(name)
+  def initialize(name, path)
     @name = name
+    @path = path
   end
 
   def set_details
-    status = File.stat(name)
+    status = File.stat(File.join(path, name))
     @details =
       { type_and_permission: Permission.new(status).type_and_permission,
         hard_link_count: status.nlink.to_s,

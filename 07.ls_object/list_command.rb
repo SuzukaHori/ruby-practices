@@ -3,13 +3,13 @@
 require_relative './file_info'
 
 class ListCommand
-  attr_reader :files, :options
+  attr_reader :files, :options, :path
 
   NUMBER_OF_COLUMNS = 3
 
-  def initialize(argv = nil)
-    @options = parse_options(argv)
-    @files = build_files(argv)
+  def initialize(file_names, path = nil)
+    @path = path
+    @files = build_files(file_names)
   end
 
   def format_file_names
@@ -36,27 +36,9 @@ class ListCommand
 
   private
 
-  def parse_options(argv)
-    opt = OptionParser.new
-    options = {}
-    opt.on('-l')
-    opt.on('-a')
-    opt.on('-r')
-    opt.parse!(argv, into: options)
-    options
-  end
-
-  def build_files(argv)
-    file_names =
-      if options[:a]
-        Dir.glob('*', File::FNM_DOTMATCH, base: argv.join)
-      else
-        Dir.glob('*', base: argv.join)
-      end
-    file_names = file_names.reverse if options[:r]
-
+  def build_files(file_names)
     file_names.each_with_object([]) do |name, array|
-      array << FileInfo.new(name)
+      array << FileInfo.new(name, path)
     end
   end
 end
