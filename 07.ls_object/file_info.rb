@@ -3,7 +3,7 @@
 require 'etc'
 
 class FileInfo
-  attr_reader :type_and_permission, :hard_link_count, :user_name, :group_name, :timestamp, :size, :name
+  attr_reader :type_and_permission, :hard_link_count, :user_name, :group_name, :timestamp, :size, :name, :blocks
 
   ITEMS = %i[
     @type_and_permission
@@ -25,18 +25,25 @@ class FileInfo
     @size = status.size.to_s
     @timestamp = status.mtime.strftime('%_m %e %H:%M')
     @name = name
+    @blocks = status.blocks
   end
 
   def value_length(sym)
     instance_variable_get(sym).length
   end
 
-  def align(key, spacing)
-    current_value = instance_variable_get(key)
+  def align(key, max_length)
+    spacing =
+      if %i[@user_name @hard_link_count @size].include?(key)
+        max_length + 1
+      else
+        max_length
+      end
+
     if %i[@user_name @group_name @name].include?(key)
-      current_value.ljust(spacing)
+      instance_variable_get(key).ljust(spacing) + ' '
     else
-      current_value.rjust(spacing)
+      instance_variable_get(key).rjust(spacing) + ' '
     end
   end
 

@@ -27,17 +27,13 @@ class ListCommand
     end
   end
 
-  def display_details
+  def display_file_details
+    total_file_blocks = files.sum { |file| file.blocks }
+    puts "total #{total_file_blocks}"
     files.each do |file|
       FileInfo::ITEMS.each do |key|
         max_length = files.map { |file| file.value_length(key) }.max
-        spacing =
-          if %i[@user_name @hard_link_count @size].include?(key)
-            max_length + 1
-          else
-            max_length
-          end
-        print "#{file.align(key, spacing)} "
+        print file.align(key, max_length)
       end
       puts
     end
