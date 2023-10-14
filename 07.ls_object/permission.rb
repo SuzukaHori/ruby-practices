@@ -7,6 +7,8 @@ class Permission
     @type_and_permission = build_type(status) + build_permission(status)
   end
 
+  private
+
   def build_type(status)
     TYPE_LIST[format('%06o', status.mode)[0, 2]]
   end
@@ -40,4 +42,6 @@ class Permission
     '6' => 'rw-',
     '7' => 'rwx'
   }.freeze
+
+  private_constant :TYPE_LIST, :PERMISSION_LIST
 end
