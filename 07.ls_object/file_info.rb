@@ -5,16 +5,6 @@ require 'etc'
 class FileInfo
   attr_reader :type_and_permission, :hard_link_count, :user_name, :group_name, :timestamp, :size, :name, :blocks
 
-  ITEMS = %i[
-    @type_and_permission
-    @hard_link_count
-    @user_name
-    @group_name
-    @size
-    @timestamp
-    @name
-  ].freeze
-
   def initialize(name)
     status = File.stat(name)
 
@@ -25,7 +15,6 @@ class FileInfo
     @size = status.size.to_s
     @timestamp = status.mtime.strftime('%_m %e %H:%M')
     @name = name
-    @blocks = status.blocks
   end
 
   def value_length(sym)

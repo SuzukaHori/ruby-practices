@@ -9,7 +9,8 @@ class ListCommand
 
   def initialize(argv = nil)
     @options = parse_options(argv)
-    @files = generate_files(argv) # 名前揺れ
+    @files = generate_files(argv)
+    @total = 0
   end
 
   def display_file_name
@@ -28,10 +29,10 @@ class ListCommand
   end
 
   def display_file_details
-    total_file_blocks = files.sum { |file| file.blocks }
+    total_file_blocks = files.sum { |file| File.stat(file.name).blocks }
     puts "total #{total_file_blocks}"
     files.each do |file|
-      FileInfo::ITEMS.each do |key|
+      file.instance_variables.each do |key|
         max_length = files.map { |file| file.value_length(key) }.max
         print file.align(key, max_length)
       end
