@@ -29,14 +29,14 @@ class FileInfo
         size: status.size.to_s,
         timestamp: status.mtime.strftime('%_m %e %H:%M'),
         name: }
-    @blocks = File.stat(name).blocks
+    @blocks = status.blocks
   end
 
   def value_length(sym)
     details[sym].length
   end
 
-  def align(sym, max_length)
+  def align_details(sym, max_length)
     spacing =
       if %i[user_name hard_link_count size].include?(sym)
         max_length + 1
@@ -45,9 +45,9 @@ class FileInfo
       end
 
     if %i[user_name group_name name].include?(sym)
-      "#{details[sym].ljust(spacing)} "
+      details[sym].ljust(spacing)
     else
-      "#{details[sym].rjust(spacing)} "
+      details[sym].rjust(spacing)
     end
   end
 

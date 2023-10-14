@@ -6,17 +6,12 @@ require_relative './list_command'
 
 list_command = ListCommand.new(ARGV)
 
-if list_command.options[:l]
-  formatted_details = list_command.build_file_details
-  puts "total #{list_command.total}"
-  formatted_details.each do |detail|
-    detail.each { |content| print content }
-    puts
-  end
-else
-  formatted_files = list_command.format_file_names
-  formatted_files.each do |block|
-    block.each { |file| print file }
-    puts
-  end
+unless list_command.files.empty?
+  formatted_infos =
+    if list_command.options[:l]
+      list_command.format_file_details
+    else
+      list_command.format_file_names
+    end
+  formatted_infos.each { |file| puts file.join(' ') }
 end
