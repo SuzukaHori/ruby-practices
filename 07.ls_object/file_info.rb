@@ -3,36 +3,51 @@
 require 'etc'
 
 class FileInfo
-  attr_reader :type_and_permission, :hard_link_count, :user_name, :group_name, :timestamp, :size, :name, :blocks
+  attr_reader :name, :details, :blocks
+
+  KEYS = %i[
+    type_and_permission
+    hard_link_count
+    user_name
+    group_name
+    size
+    timestamp
+    name
+  ].freeze
 
   def initialize(name)
-    status = File.stat(name)
-
-    @type_and_permission = generate_type_and_permission(status)
-    @hard_link_count = status.nlink.to_s
-    @user_name = Etc.getpwuid(status.uid).name
-    @group_name = Etc.getgrgid(status.gid).name
-    @size = status.size.to_s
-    @timestamp = status.mtime.strftime('%_m %e %H:%M')
     @name = name
   end
 
-  def value_length(sym)
-    instance_variable_get(sym).length
+  def set_details
+    status = File.stat(name)
+    @details =
+      { type_and_permission: generate_type_and_permission(status),
+        hard_link_count: status.nlink.to_s,
+        user_name: Etc.getpwuid(status.uid).name,
+        group_name: Etc.getgrgid(status.gid).name,
+        size: status.size.to_s,
+        timestamp: status.mtime.strftime('%_m %e %H:%M'),
+        name: }
+    @blocks = File.stat(name).blocks
   end
 
-  def align(key, max_length)
+  def value_length(sym)
+    details[sym].length
+  end
+
+  def align(sym, max_length)
     spacing =
-      if %i[@user_name @hard_link_count @size].include?(key)
+      if %i[user_name hard_link_count size].include?(sym)
         max_length + 1
       else
         max_length
       end
 
-    if %i[@user_name @group_name @name].include?(key)
-      instance_variable_get(key).ljust(spacing) + ' '
+    if %i[user_name group_name name].include?(sym)
+      "#{details[sym].ljust(spacing)} "
     else
-      instance_variable_get(key).rjust(spacing) + ' '
+      "#{details[sym].rjust(spacing)} "
     end
   end
 

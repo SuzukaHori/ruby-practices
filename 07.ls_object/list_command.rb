@@ -3,40 +3,34 @@
 require_relative './file_info'
 
 class ListCommand
-  attr_reader :files, :options
+  attr_reader :files, :options, :total
 
   NUMBER_OF_COLUMNS = 3
 
   def initialize(argv = nil)
     @options = parse_options(argv)
-    @files = generate_files(argv)
-    @total = 0
+    @files = build_files(argv)
   end
 
-  def display_file_name
+  def format_file_names
     column_spacing = files.map { |file| file.name.size }.max + 1
     number_of_rows = (files.size / NUMBER_OF_COLUMNS.to_f).ceil
 
     spaced_files = files.each_with_object([]) do |file, array|
       array << file.name.ljust(column_spacing)
     end
-    formatted_files = spaced_files.each_slice(number_of_rows).to_a.each { |group| group << nil while group.size < number_of_rows }.transpose
-
-    formatted_files.each do |block|
-      block.each { |file| print file }
-      print "\n"
-    end
+    spaced_files.each_slice(number_of_rows).to_a.each { |group| group << nil while group.size < number_of_rows }.transpose
   end
 
-  def display_file_details
-    total_file_blocks = files.sum { |file| File.stat(file.name).blocks }
-    puts "total #{total_file_blocks}"
-    files.each do |file|
-      file.instance_variables.each do |key|
-        max_length = files.map { |file| file.value_length(key) }.max
-        print file.align(key, max_length)
+  def build_file_details
+    files.each(&:set_details)
+    @total = files.sum(&:blocks)
+
+    files.map do |file|
+      FileInfo::KEYS.map do |key|
+        max_length = files.map { |f| f.value_length(key) }.max
+        file.align(key, max_length)
       end
-      puts
     end
   end
 
@@ -52,7 +46,7 @@ class ListCommand
     options
   end
 
-  def generate_files(argv)
+  def build_files(argv)
     file_names =
       if options[:a]
         Dir.glob('*', File::FNM_DOTMATCH, base: argv.join)
