@@ -4,7 +4,7 @@ require 'etc'
 require_relative './permission'
 
 class FileInfo
-  attr_reader :name, :details, :blocks, :path
+  attr_reader :name, :details, :blocks
 
   KEYS = %i[
     type_and_permission
@@ -16,12 +16,11 @@ class FileInfo
     name
   ].freeze
 
-  def initialize(name, path)
+  def initialize(name)
     @name = name
-    @path = path
   end
 
-  def set_details
+  def get_details(path)
     status = File.stat(File.join(path, name))
     @details =
       { type_and_permission: Permission.new(status).type_and_permission,
@@ -39,13 +38,7 @@ class FileInfo
   end
 
   def align_details(sym, max_length)
-    spacing =
-      if %i[user_name hard_link_count size].include?(sym)
-        max_length + 1
-      else
-        max_length
-      end
-
+    spacing = %i[user_name hard_link_count size].include?(sym) ? max_length + 1 : max_length
     if %i[user_name group_name name].include?(sym)
       details[sym].ljust(spacing)
     else

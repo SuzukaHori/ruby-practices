@@ -3,11 +3,11 @@
 require_relative './file_info'
 
 class ListCommand
-  attr_reader :files, :options, :path
+  attr_reader :files, :path
 
   NUMBER_OF_COLUMNS = 3
 
-  def initialize(file_names, path = nil)
+  def initialize(file_names, path)
     @path = path
     @files = build_files(file_names)
   end
@@ -23,7 +23,7 @@ class ListCommand
   end
 
   def format_file_details
-    files.each(&:set_details)
+    files.each { |file| file.get_details(path) }
 
     file_details = files.map do |file|
       FileInfo::KEYS.map do |key|
@@ -38,7 +38,7 @@ class ListCommand
 
   def build_files(file_names)
     file_names.each_with_object([]) do |name, array|
-      array << FileInfo.new(name, path)
+      array << FileInfo.new(name)
     end
   end
 end
