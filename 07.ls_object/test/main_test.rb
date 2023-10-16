@@ -10,67 +10,76 @@ class MainTest < Test::Unit::TestCase
     $stdout = StringIO.new
   end
 
+  PATH = File.expand_path('./sample/', File.dirname(__FILE__))
+
   test 'オプションなしの場合は、ファイル名を表示する' do
-    path = File.expand_path('..', File.dirname(__FILE__))
-    setup_argv_and_output([path])
+    setup_argv_and_output([PATH])
     text = <<~LIST
-      file_info.rb    main.rb         test#{'           '}
-      list_command.rb permission.rb#{'   '}
+      buzz.rb      sample1.text
+      fuzz.txt     sample2.rb#{'  '}
     LIST
     main
     assert_equal text, $stdout.string
   end
 
   test 'rオプションがある場合、ファイルの並びを逆にする' do
-    path = File.expand_path('..', File.dirname(__FILE__))
-    setup_argv_and_output(['-r', path])
+    setup_argv_and_output(['-r', PATH])
     text = <<~LIST
-      test            main.rb         file_info.rb#{'   '}
-      permission.rb   list_command.rb#{' '}
+      sample2.rb   fuzz.txt#{'    '}
+      sample1.text buzz.rb#{'     '}
     LIST
     main
     assert_equal text, $stdout.string
   end
 
   test 'aオプションがある場合、隠しファイルも表示する' do
-    path = File.expand_path('..', File.dirname(__FILE__))
-    setup_argv_and_output(['-a', path])
+    setup_argv_and_output(['-a', PATH])
     text = <<~LIST
-      .               list_command.rb test#{'           '}
-      .gitkeep        main.rb#{'         '}
-      file_info.rb    permission.rb#{'   '}
+      .            buzz.rb      sample1.text
+      .sample3.txt fuzz.txt     sample2.rb#{'  '}
     LIST
     main
     assert_equal text, $stdout.string
   end
 
   test 'lオプションがある場合、ファイルの詳細を表示する' do
-    path = File.expand_path('..', File.dirname(__FILE__))
-    setup_argv_and_output(['-l', path])
+    setup_argv_and_output(['-l', PATH])
     text = <<~LIST
       total 32
-      -rw-r--r--  1 suzuka  staff  1152 10 14 21:18 file_info.rb#{'   '}
-      -rw-r--r--  1 suzuka  staff  1118 10 14 21:28 list_command.rb
-      -rwxr-xr-x  1 suzuka  staff   979 10 14 21:44 main.rb#{'        '}
-      -rw-r--r--  1 suzuka  staff   828 10 14 16:20 permission.rb#{'  '}
-      drwxr-xr-x  3 suzuka  staff    96 10 14 18:05 test#{'           '}
+      -rw-r--r--  1 suzuka  staff  29 10 16 14:43 buzz.rb#{'     '}
+      -rw-r--r--  1 suzuka  staff   5 10 16 14:05 fuzz.txt#{'    '}
+      -rw-r--r--  1 suzuka  staff  35 10 16 14:05 sample1.text
+      -rw-r--r--  1 suzuka  staff  32 10 16 14:42 sample2.rb#{'  '}
+    LIST
+    main
+    assert_equal text, $stdout.string
+  end
+
+  test 'aとlの2つのオプションを使った場合、すべてのファイルの詳細を表示する' do
+    setup_argv_and_output(['-al', PATH])
+    text = <<~LIST
+      total 32
+      drwxr-xr-x  7 suzuka  staff  224 10 16 14:20 .#{'           '}
+      -rw-r--r--  1 suzuka  staff    0 10 16 14:20 .sample3.txt
+      -rw-r--r--  1 suzuka  staff   29 10 16 14:43 buzz.rb#{'     '}
+      -rw-r--r--  1 suzuka  staff    5 10 16 14:05 fuzz.txt#{'    '}
+      -rw-r--r--  1 suzuka  staff   35 10 16 14:05 sample1.text
+      -rw-r--r--  1 suzuka  staff   32 10 16 14:42 sample2.rb#{'  '}
     LIST
     main
     assert_equal text, $stdout.string
   end
 
   test 'すべてのオプションを同時に使った場合' do
-    path = File.expand_path('..', File.dirname(__FILE__))
-    setup_argv_and_output(['-lar', path])
+    setup_argv_and_output(['-lar', PATH])
     text = <<~LIST
       total 32
-      drwxr-xr-x  3 suzuka  staff    96 10 14 18:05 test#{'           '}
-      -rw-r--r--  1 suzuka  staff   828 10 14 16:20 permission.rb#{'  '}
-      -rwxr-xr-x  1 suzuka  staff   979 10 14 21:44 main.rb#{'        '}
-      -rw-r--r--  1 suzuka  staff  1118 10 14 21:28 list_command.rb
-      -rw-r--r--  1 suzuka  staff  1152 10 14 21:18 file_info.rb#{'   '}
-      -rw-r--r--  1 suzuka  staff     0  4 25 15:29 .gitkeep#{'       '}
-      drwxr-xr-x  8 suzuka  staff   256 10 14 17:58 .#{'              '}
+      -rw-r--r--  1 suzuka  staff   32 10 16 14:42 sample2.rb#{'  '}
+      -rw-r--r--  1 suzuka  staff   35 10 16 14:05 sample1.text
+      -rw-r--r--  1 suzuka  staff    5 10 16 14:05 fuzz.txt#{'    '}
+      -rw-r--r--  1 suzuka  staff   29 10 16 14:43 buzz.rb#{'     '}
+      -rw-r--r--  1 suzuka  staff    0 10 16 14:20 .sample3.txt
+      drwxr-xr-x  7 suzuka  staff  224 10 16 14:20 .#{'           '}
     LIST
     main
     assert_equal text, $stdout.string
