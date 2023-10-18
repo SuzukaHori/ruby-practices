@@ -4,7 +4,7 @@ require 'etc'
 require_relative './permission'
 
 class FileInfo
-  attr_reader :name, :details, :blocks
+  attr_reader :name, :detail, :blocks
 
   KEYS = %i[
     type_and_permission
@@ -20,9 +20,9 @@ class FileInfo
     @name = name
   end
 
-  def get_details(path)
+  def get_detail(path)
     status = File.stat(File.join(path, name))
-    @details =
+    @detail =
       { type_and_permission: Permission.new(status).type_and_permission,
         hard_link_count: status.nlink.to_s,
         user_name: Etc.getpwuid(status.uid).name,
@@ -34,15 +34,15 @@ class FileInfo
   end
 
   def value_length(sym)
-    details[sym].length
+    detail[sym].length
   end
 
-  def align_details(sym, max_length)
+  def align_detail(sym, max_length)
     spacing = %i[user_name hard_link_count size].include?(sym) ? max_length + 1 : max_length
     if %i[user_name group_name name].include?(sym)
-      details[sym].ljust(spacing)
+      detail[sym].ljust(spacing)
     else
-      details[sym].rjust(spacing)
+      detail[sym].rjust(spacing)
     end
   end
 end

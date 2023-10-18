@@ -6,9 +6,10 @@ require_relative './list_command'
 
 def main
   options = parse_options(ARGV)
-  path = ARGV.empty? ? Dir.pwd : File.expand_path(ARGV[0])
   file_names = build_file_names_by_options(options)
   return if file_names.empty?
+
+  path = ARGV.empty? ? Dir.pwd : File.expand_path(ARGV[0])
 
   list_command = ListCommand.new(file_names, path)
   formatted_infos = options[:l] ? list_command.format_file_details : list_command.format_file_names
