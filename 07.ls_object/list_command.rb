@@ -7,9 +7,21 @@ class ListCommand
 
   NUMBER_OF_COLUMNS = 3
 
+  DETAIL_KEYS = %i[
+    type_and_permission
+    hard_link_count
+    user_name
+    group_name
+    size
+    timestamp
+    name
+  ].freeze
+
+  private_constant :NUMBER_OF_COLUMNS, :DETAIL_KEYS
+
   def initialize(file_names, path)
     @path = path
-    @files = file_names.map { |name| FileInfo.new(name) }
+    @files = file_names.map { |name| FileInfo.new(path, name) }
   end
 
   def format_file_names
@@ -22,17 +34,37 @@ class ListCommand
   end
 
   def format_file_details
-    files.each { |file| file.get_detail(path) }
-    max_lengths = calculate_max_lengths
-    file_details = files.map do |file|
-      FileInfo::KEYS.map { |key| file.align_detail(key, max_lengths[key]) }
+    details = files.map { |file| build_detail(file) }
+    max_lengths = calculate_max_lengths(details)
+    formatted_details = details.map do |detail|
+      DETAIL_KEYS.map { |key| align_detail(key:, value: detail[key], max_length: max_lengths[key]) }
     end
-    file_details.unshift(["total #{files.sum(&:blocks)}"])
+    formatted_details.unshift(["total #{files.sum { |file| file.status.blocks }}"])
+    formatted_details
   end
 
   private
 
-  def calculate_max_lengths
-    FileInfo::KEYS.map { |key| [key, files.map { |f| f.value_length(key) }.max] }.to_h
+  def build_detail(file)
+    { type_and_permission: Permission.new(file.status).type_and_permission,
+      hard_link_count: file.hard_link_count,
+      user_name: file.user_name,
+      group_name: file.group_name,
+      size: file.size,
+      timestamp: file.timestamp,
+      name: file.name }
+  end
+
+  def calculate_max_lengths(details)
+    DETAIL_KEYS.map { |key| [key, details.map { |detail| detail[key].length }.max] }.to_h
+  end
+
+  def align_detail(key:, value:, max_length:)
+    spacing = calculate_spacing(max_length, key)
+    %i[user_name group_name name].include?(key) ? value.ljust(spacing) : value.rjust(spacing)
+  end
+
+  def calculate_spacing(max_length, key)
+    %i[user_name hard_link_count size].include?(key) ? max_length + 1 : max_length
   end
 end

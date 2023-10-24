@@ -4,45 +4,30 @@ require 'etc'
 require_relative './permission'
 
 class FileInfo
-  attr_reader :name, :detail, :blocks
+  attr_reader :name, :status
 
-  KEYS = %i[
-    type_and_permission
-    hard_link_count
-    user_name
-    group_name
-    size
-    timestamp
-    name
-  ].freeze
-
-  def initialize(name)
+  def initialize(path, name)
     @name = name
+    @status = File.stat(File.join(path, name))
   end
 
-  def get_detail(path)
-    status = File.stat(File.join(path, name))
-    @detail =
-      { type_and_permission: Permission.new(status).type_and_permission,
-        hard_link_count: status.nlink.to_s,
-        user_name: Etc.getpwuid(status.uid).name,
-        group_name: Etc.getgrgid(status.gid).name,
-        size: status.size.to_s,
-        timestamp: status.mtime.strftime('%_m %e %H:%M'),
-        name: }
-    @blocks = status.blocks
+  def hard_link_count
+    status.nlink.to_s
   end
 
-  def value_length(sym)
-    detail[sym].length
+  def user_name
+    Etc.getpwuid(status.uid).name
   end
 
-  def align_detail(sym, max_length)
-    spacing = %i[user_name hard_link_count size].include?(sym) ? max_length + 1 : max_length
-    if %i[user_name group_name name].include?(sym)
-      detail[sym].ljust(spacing)
-    else
-      detail[sym].rjust(spacing)
-    end
+  def group_name
+    Etc.getgrgid(status.gid).name
+  end
+
+  def size
+    status.size.to_s
+  end
+
+  def timestamp
+    status.mtime.strftime('%_m %e %H:%M')
   end
 end
