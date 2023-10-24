@@ -3,7 +3,7 @@
 require 'etc'
 
 class FileInfo
-  attr_reader :name, :status
+  attr_reader :name, :path
 
   TYPE_LIST = {
     '01' => 'p',
@@ -30,7 +30,11 @@ class FileInfo
 
   def initialize(path, name)
     @name = name
-    @status = File.stat(File.join(path, name))
+    @path = path
+  end
+
+  def status
+    @status ||= File.stat(File.join(path, name))
   end
 
   def hard_link_count

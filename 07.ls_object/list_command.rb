@@ -3,7 +3,7 @@
 require_relative './file_info'
 
 class ListCommand
-  attr_reader :files, :path
+  attr_reader :files
 
   NUMBER_OF_COLUMNS = 3
 
@@ -20,7 +20,6 @@ class ListCommand
   private_constant :NUMBER_OF_COLUMNS, :DETAIL_KEYS
 
   def initialize(file_names, path)
-    @path = path
     @files = file_names.map { |name| FileInfo.new(path, name) }
   end
 
@@ -35,27 +34,20 @@ class ListCommand
 
   def format_file_details
     details = files.map { |file| build_detail(file) }
-    max_lengths = calculate_max_lengths(details)
+    max_length_list = build_max_length_list(details)
     formatted_details = details.map do |detail|
-      DETAIL_KEYS.map { |key| align_detail(key:, value: detail[key], max_length: max_lengths[key]) }
+      DETAIL_KEYS.map { |key| align_detail(key:, value: detail[key], max_length: max_length_list[key]) }
     end
-    formatted_details.unshift(["total #{files.sum { |file| file.status.blocks }}"])
-    formatted_details
+    [["total #{files.sum { |file| file.status.blocks }}"], *formatted_details]
   end
 
   private
 
   def build_detail(file)
-    { type_and_permission: file.type_and_permission,
-      hard_link_count: file.hard_link_count,
-      user_name: file.user_name,
-      group_name: file.group_name,
-      size: file.size,
-      timestamp: file.timestamp,
-      name: file.name }
+    DETAIL_KEYS.map { |key| [key, file.send(key)] }.to_h
   end
 
-  def calculate_max_lengths(details)
+  def build_max_length_list(details)
     DETAIL_KEYS.map { |key| [key, details.map { |detail| detail[key].length }.max] }.to_h
   end
 
