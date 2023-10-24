@@ -46,7 +46,7 @@ class ListCommand
   private
 
   def build_detail(file)
-    { type_and_permission: Permission.new(file.status).type_and_permission,
+    { type_and_permission: file.type_and_permission,
       hard_link_count: file.hard_link_count,
       user_name: file.user_name,
       group_name: file.group_name,
