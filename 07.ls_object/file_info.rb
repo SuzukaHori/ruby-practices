@@ -58,21 +58,14 @@ class FileInfo
   end
 
   def type_and_permission
-    build_type(status) + build_permission(status)
-  end
+    type = TYPE_LIST[format('%06o', status.mode)[0, 2]]
+    permission = status.mode
+                       .to_s(8)
+                       .slice(-3, 3)
+                       .chars
+                       .map { |n| PERMISSION_LIST[n] }
+                       .join
 
-  private
-
-  def build_type(status)
-    TYPE_LIST[format('%06o', status.mode)[0, 2]]
-  end
-
-  def build_permission(status)
-    status.mode
-          .to_s(8)
-          .slice(-3, 3)
-          .chars
-          .map { |n| PERMISSION_LIST[n] }
-          .join
+    type + permission
   end
 end

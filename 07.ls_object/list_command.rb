@@ -52,11 +52,7 @@ class ListCommand
   end
 
   def align_detail(key:, value:, max_length:)
-    spacing = calculate_spacing(max_length, key)
+    spacing = %i[user_name hard_link_count size].include?(key) ? max_length + 1 : max_length
     %i[user_name group_name name].include?(key) ? value.ljust(spacing) : value.rjust(spacing)
-  end
-
-  def calculate_spacing(max_length, key)
-    %i[user_name hard_link_count size].include?(key) ? max_length + 1 : max_length
   end
 end
