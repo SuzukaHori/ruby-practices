@@ -4,7 +4,7 @@ require 'etc'
 require 'forwardable'
 
 class FileInfo
-  attr_reader :name, :path
+  attr_reader :path
 
   extend Forwardable
 
@@ -31,13 +31,16 @@ class FileInfo
 
   private_constant :TYPE_LIST, :PERMISSION_LIST
 
-  def initialize(path, name)
-    @name = name
-    @path = path
+  def initialize(file_path)
+    @path = file_path
   end
 
   def status
-    @status ||= File.stat(File.join(path, name))
+    @status ||= File.stat(File.join(path))
+  end
+
+  def name
+    File.basename(path)
   end
 
   def hard_link_count

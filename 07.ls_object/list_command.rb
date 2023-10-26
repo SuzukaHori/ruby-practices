@@ -20,7 +20,10 @@ class ListCommand
   private_constant :NUMBER_OF_COLUMNS, :DETAIL_KEYS
 
   def initialize(file_names, path)
-    @files = file_names.map { |name| FileInfo.new(path, name) }
+    @files = file_names.map do |name|
+      file_path = path + '/' + name
+      FileInfo.new(file_path)
+    end
   end
 
   def format_file_names
