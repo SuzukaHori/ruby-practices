@@ -12,8 +12,19 @@ def main
   path = ARGV.empty? ? Dir.pwd : File.expand_path(ARGV[0])
 
   list_command = ListCommand.new(file_names, path)
-  formatted_info_list = options[:l] ? list_command.format_file_details : list_command.format_file_names
-  formatted_info_list.each { |file| puts file.join(' ') }
+  if options[:l]
+    formatted_detail_list = list_command.format_file_details
+    formatted_detail_list.each do |detail|
+      detail.each { |item| print "#{item} " }
+      puts
+    end
+  else
+    formatted_file_names = list_command.format_file_names
+    formatted_file_names.each do |name|
+      name.each {|name| print "#{name} "}
+      puts
+    end
+  end
 end
 
 def parse_options(argv)
