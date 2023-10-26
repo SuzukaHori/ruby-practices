@@ -61,15 +61,16 @@ class FileInfo
     status.mtime
   end
 
-  def type_and_permission
-    type = TYPE_LIST[format('%06o', status.mode)[0, 2]]
-    permission = status.mode
-                       .to_s(8)
-                       .slice(-3, 3)
-                       .chars
-                       .map { |n| PERMISSION_LIST[n] }
-                       .join
+  def type
+    TYPE_LIST[format('%06o', status.mode)[0, 2]]
+  end
 
-    type + permission
+  def permission
+    status.mode
+          .to_s(8)
+          .slice(-3, 3)
+          .chars
+          .map { |n| PERMISSION_LIST[n] }
+          .join
   end
 end
