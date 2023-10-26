@@ -34,6 +34,7 @@ class ListCommand
                 .each { |group| group << nil while group.size < number_of_rows }
                 .transpose
                 .each { |row| row << "\n" }
+                .flatten
   end
 
   def format_file_details
@@ -42,7 +43,7 @@ class ListCommand
     formatted_details = details.map do |detail|
       DETAIL_KEYS.map { |key| align_detail(key, detail, max_length_by_key) }
     end
-    [["total #{files.sum { |file| file.status.blocks }}"], *formatted_details].each { |row| row << "\n" }
+    ["total #{files.sum { |file| file.status.blocks }}", *formatted_details].each { |row| row << "\n" }.flatten
   end
 
   private
