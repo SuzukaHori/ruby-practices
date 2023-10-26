@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require 'etc'
+require 'forwardable'
 
 class FileInfo
   attr_reader :name, :path
+
+  extend Forwardable
 
   TYPE_LIST = {
     '01' => 'p',
@@ -38,7 +41,7 @@ class FileInfo
   end
 
   def hard_link_count
-    status.nlink.to_s
+    status.nlink
   end
 
   def user_name
@@ -49,12 +52,10 @@ class FileInfo
     Etc.getgrgid(status.gid).name
   end
 
-  def size
-    status.size.to_s
-  end
+  delegate size: :status
 
   def timestamp
-    status.mtime.strftime('%_m %e %H:%M')
+    status.mtime
   end
 
   def type_and_permission

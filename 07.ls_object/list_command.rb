@@ -44,7 +44,10 @@ class ListCommand
   private
 
   def build_detail(file)
-    DETAIL_KEYS.map { |key| [key, file.send(key)] }.to_h
+    detail = DETAIL_KEYS.map do |key|
+      key == :timestamp ? [key, file.timestamp.strftime('%_m %e %H:%M')] : [key, file.send(key).to_s]
+    end
+    detail.to_h
   end
 
   def build_max_length_list(details)
