@@ -31,12 +31,12 @@ class FileInfo
 
   private_constant :TYPE_LIST, :PERMISSION_LIST
 
-  def initialize(file_path)
-    @path = file_path
+  def initialize(path)
+    @path = path
   end
 
   def status
-    @status ||= File.stat(File.join(path))
+    @status ||= File.stat(path)
   end
 
   def name

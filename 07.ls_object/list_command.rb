@@ -20,28 +20,29 @@ class ListCommand
   private_constant :NUMBER_OF_COLUMNS, :DETAIL_KEYS
 
   def initialize(file_names, path)
-    @files = file_names.map do |name|
-      file_path = path + '/' + name
+    @files = file_names.map do |file_name|
+      file_path = "#{path}/#{file_name}"
       FileInfo.new(file_path)
     end
   end
 
   def format_file_names
-    column_spacing = files.map { |file| file.name.size }.max
+    column_spacing = files.map { |file| file.name.size }.max + 1
     number_of_rows = (files.size / NUMBER_OF_COLUMNS.to_f).ceil
     spaced_files = files.map { |file| file.name.ljust(column_spacing) }
     spaced_files.each_slice(number_of_rows).to_a
                 .each { |group| group << nil while group.size < number_of_rows }
                 .transpose
+                .each { |row| row << "\n" }
   end
 
   def format_file_details
     details = files.map { |file| build_detail(file) }
-    max_length_list = build_max_length_list(details)
+    max_length_by_key = build_max_length_by_key(details)
     formatted_details = details.map do |detail|
-      DETAIL_KEYS.map { |key| align_detail(key:, value: detail[key], max_length: max_length_list[key]) }
+      DETAIL_KEYS.map { |key| align_detail(key, detail, max_length_by_key) }
     end
-    [["total #{files.sum { |file| file.status.blocks }}"], *formatted_details]
+    [["total #{files.sum { |file| file.status.blocks }}"], *formatted_details].each { |row| row << "\n" }
   end
 
   private
@@ -53,12 +54,14 @@ class ListCommand
     detail.to_h
   end
 
-  def build_max_length_list(details)
+  def build_max_length_by_key(details)
     DETAIL_KEYS.map { |key| [key, details.map { |detail| detail[key].length }.max] }.to_h
   end
 
-  def align_detail(key:, value:, max_length:)
+  def align_detail(key, detail, max_length_by_key)
+    max_length = max_length_by_key[key]
+    value = detail[key]
     spacing = %i[user_name hard_link_count size].include?(key) ? max_length + 1 : max_length
-    %i[user_name group_name name].include?(key) ? value.ljust(spacing) : value.rjust(spacing)
+    %i[user_name group_name name].include?(key) ? value.ljust(spacing).concat(' ') : value.rjust(spacing).concat(' ')
   end
 end
