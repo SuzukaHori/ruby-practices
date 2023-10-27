@@ -38,9 +38,9 @@ class ListCommand
 
   def format_file_details
     details = files.map { |file| build_detail(file) }
-    max_length_by_key = build_max_length_by_key(details)
+    max_length_hash = build_max_length_hash(details)
     formatted_details = details.map do |detail|
-      DETAIL_KEYS.map { |key| align_detail(key, detail, max_length_by_key) }.join(' ')
+      DETAIL_KEYS.map { |key| align_detail(key, detail, max_length_hash) }.join(' ')
     end
     ["total #{files.sum { |file| file.status.blocks }}", *formatted_details]
   end
@@ -62,15 +62,15 @@ class ListCommand
     end
   end
 
-  def build_max_length_by_key(details)
+  def build_max_length_hash(details)
     DETAIL_KEYS.to_h do |key|
       max_length = details.map { |detail| detail[key].length }.max
       [key, max_length]
     end
   end
 
-  def align_detail(key, detail, max_length_by_key)
-    max_length = max_length_by_key[key]
+  def align_detail(key, detail, max_length_hash)
+    max_length = max_length_hash[key]
     value = detail[key]
     spacing = %i[user_name hard_link_count size].include?(key) ? max_length + 1 : max_length
     %i[user_name group_name name].include?(key) ? value.ljust(spacing) : value.rjust(spacing)
