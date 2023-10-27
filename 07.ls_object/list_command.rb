@@ -27,23 +27,22 @@ class ListCommand
   end
 
   def format_file_names
-    column_spacing = files.map { |file| file.name.size }.max + 1
+    column_spacing = files.map { |file| file.name.size }.max
     number_of_rows = (files.size / NUMBER_OF_COLUMNS.to_f).ceil
     spaced_files = files.map { |file| file.name.ljust(column_spacing) }
     spaced_files.each_slice(number_of_rows).to_a
                 .each { |group| group << nil while group.size < number_of_rows }
                 .transpose
-                .each { |row| row << "\n" }
-                .flatten
+                .map { |row| row.join(' ') }
   end
 
   def format_file_details
     details = files.map { |file| build_detail(file) }
     max_length_by_key = build_max_length_by_key(details)
     formatted_details = details.map do |detail|
-      DETAIL_KEYS.map { |key| align_detail(key, detail, max_length_by_key).concat(' ') }
+      DETAIL_KEYS.map { |key| align_detail(key, detail, max_length_by_key) }.join(' ')
     end
-    ["total #{files.sum { |file| file.status.blocks }}", *formatted_details].each { |row| row << "\n" }.flatten
+    ["total #{files.sum { |file| file.status.blocks }}", *formatted_details]
   end
 
   private

@@ -14,10 +14,10 @@ def main
   list_command = ListCommand.new(file_names, path)
   if options[:l]
     formatted_file_details = list_command.format_file_details
-    formatted_file_details.each { |item| print item }
+    formatted_file_details.each { |row| puts row }
   else
     formatted_file_names = list_command.format_file_names
-    formatted_file_names.each { |file_name| print file_name }
+    formatted_file_names.each { |file_name| puts file_name }
   end
 end
 
