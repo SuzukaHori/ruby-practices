@@ -21,7 +21,7 @@ class ListCommand
 
   def initialize(file_names, path)
     @files = file_names.map do |file_name|
-      file_path = "#{path}/#{file_name}"
+      file_path = File.join(path, file_name)
       FileInfo.new(file_path)
     end
   end
@@ -49,7 +49,7 @@ class ListCommand
   private
 
   def build_detail(file)
-    detail = DETAIL_KEYS.map do |key|
+    DETAIL_KEYS.to_h do |key|
       value =
         case key
         when :type_and_permission
@@ -61,11 +61,13 @@ class ListCommand
         end
       [key, value]
     end
-    detail.to_h
   end
 
   def build_max_length_by_key(details)
-    DETAIL_KEYS.map { |key| [key, details.map { |detail| detail[key].length }.max] }.to_h
+    DETAIL_KEYS.to_h do |key|
+      max_length = details.map { |detail| detail[key].length }.max
+      [key, max_length]
+    end
   end
 
   def align_detail(key, detail, max_length_by_key)
