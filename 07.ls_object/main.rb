@@ -32,12 +32,8 @@ def parse_options(argv)
 end
 
 def build_file_names_by_options(options)
-  file_names =
-    if options[:a]
-      Dir.glob('*', File::FNM_DOTMATCH, base: ARGV.join)
-    else
-      Dir.glob('*', base: ARGV.join)
-    end
+  flag = options[:a] ? File::FNM_DOTMATCH : 0
+  file_names = Dir.glob('*', flag, base: ARGV.join)
   options [:r] ? file_names.reverse : file_names
 end
 
